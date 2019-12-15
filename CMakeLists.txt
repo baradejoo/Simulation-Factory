@@ -12,13 +12,14 @@ set(SOURCE_FILES
         src/package.cpp
         )
 
-#add_executable(Fabryka__debug ${SOURCE_FILES} lab10.cpp)
+add_executable(Fabryka__debug ${SOURCE_FILES} fabryka.cpp)
+
 #set(SOURCES_FILES_TESTS
 #        test/test_vector.cpp
 #        test/test_matrix.cpp
 #        )
 
-add_executable(Fabryka__test ${SOURCE_FILES} ${SOURCES_FILES_TESTS} test/main_gtest.cpp)
+add_executable(Fabryka__test ${SOURCE_FILES} ${SOURCES_FILES_TESTS} test/main_gtest.cpp test/test_package.cpp)
 
 target_include_directories(Fabryka__test PUBLIC
         ../../googletest-master/googlemock/include

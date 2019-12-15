@@ -1,6 +1,7 @@
-#include <iostream>
+#include <cstdlib>
+#include "storage_types.hpp"
+#include "package.hpp"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+    return EXIT_SUCCESS;
 }
