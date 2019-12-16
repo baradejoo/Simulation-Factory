@@ -10,9 +10,9 @@ include_directories(
 
 set(SOURCE_FILES
         src/package.cpp
-        )
+        src/storage_types.cpp)
 
-add_executable(Fabryka__debug ${SOURCE_FILES} fabryka.cpp)
+add_executable(Fabryka__debug ${SOURCE_FILES} fabryka.cpp src/storage_types.cpp)
 
 #set(SOURCES_FILES_TESTS
 #        test/test_vector.cpp
