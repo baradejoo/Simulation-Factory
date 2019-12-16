@@ -37,5 +37,14 @@ TEST(FabrykaPackageTest, deletingTest) {
 //TEST(FabrykaPackageTest, moveOperationTest) {
 //    Package p1;
 //    Package p2;
-//    p2 = Package(p1);
+//    Package p3;
+//    Package p4;
+//    Package p5;
+//    Package(p1);
+//
+//    EXPECT_EQ(p5.get_id(), 1);
+//    EXPECT_EQ(p2.get_id(), 2);
+//    EXPECT_EQ(p3.get_id(), 3);
+//    EXPECT_EQ(p4.get_id(), 4);
+//
 //}

@@ -12,10 +12,8 @@ using ElementID = int;
 class Package {
 public:
     Package();
-    Package(Package& p){ id_ = p.id_;};
     Package(Package&& p);
-    //tego nie wiem jak zrobić
-   // Package& operator=(Package&& p);
+    Package& operator=(Package&& p);
     ElementID get_id() const {return id_;}
     ~Package();
 
