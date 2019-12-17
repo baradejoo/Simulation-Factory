@@ -12,21 +12,21 @@ set(SOURCE_FILES
         src/package.cpp
         src/storage_types.cpp)
 
-add_executable(Fabryka__debug ${SOURCE_FILES} fabryka.cpp src/storage_types.cpp)
+add_executable(Fabryka__debug ${SOURCE_FILES} fabryka.cpp #src/storage_types.cpp#)
+        )
+set(SOURCES_FILES_TESTS
+        test/test_package.cpp
+        )
 
-#set(SOURCES_FILES_TESTS
-#        test/test_vector.cpp
-#        test/test_matrix.cpp
-#        )
-
-add_executable(Fabryka__test ${SOURCE_FILES} ${SOURCES_FILES_TESTS} test/main_gtest.cpp test/test_package.cpp)
+add_executable(Fabryka__test ${SOURCE_FILES} ${SOURCES_FILES_TESTS} test/main_gtest.cpp)
 
 target_include_directories(Fabryka__test PUBLIC
         ../../googletest-master/googlemock/include
         ../../googletest-master/googletest/include
+        mocks
         )
 
-add_subdirectory(../googletest-master googletest-master)
+add_subdirectory(googletest-master)
 
 target_link_libraries(Fabryka__test gmock)
 
