@@ -22,9 +22,10 @@ public:
 
 class IPackageStockpile{
 public:
+    std::deque<Package>::const_iterator
     void push(Package&&);
     bool empty();
-    size_type size();
+    int size();
 
 };
 
