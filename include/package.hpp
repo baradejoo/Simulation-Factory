@@ -19,9 +19,9 @@ public:
 
 private:
     ElementID id_=0;
-    _inline static ElementID id;
-    _inline static std::set<ElementID> assigned_IDs_;
-    _inline static std::set<ElementID> freed_IDs_;
+    inline static ElementID id;
+    inline static std::set<ElementID> assigned_IDs_;
+    inline static std::set<ElementID> freed_IDs_;
 
 };
 
