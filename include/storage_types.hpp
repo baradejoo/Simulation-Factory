@@ -8,7 +8,7 @@
 enum class PackageQueueType{
     FIFO, LIFO
 };
-
+/*
 class PackageQue : public IPackageQueue {
 public:
     PackageQueue(PackageQueueType);
@@ -29,6 +29,6 @@ public:
 
 };
 
-
+*/
 
 #endif //LAB10_STORAGE_TYPES_HPP
