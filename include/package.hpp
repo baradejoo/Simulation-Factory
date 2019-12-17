@@ -6,14 +6,14 @@
 #define LAB10_PACKAGE_HPP
 
 #include <set>
+#include "types.hpp"
 
-using ElementID = int;
 
 class Package {
 public:
     Package();
     Package(Package&& p);
-    Package& operator=(Package&& p);
+//    Package& operator=(Package& p);
     ElementID get_id() const {return id_;}
     ~Package();
 
