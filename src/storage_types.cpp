@@ -18,3 +18,11 @@ PackageQue::PackageQueue(PackageQueueType) {
     }
 }
 
+IPackageStockpile::size() {
+
+}
+
+IPackageStockpile::empty() {
+
+}
+
