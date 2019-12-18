@@ -6,17 +6,23 @@
 
 
 
-PackageQueue::PackageQueue(PackageQueueType) {
-    switch(PackageQueueType){
-        case FIFO:
+PackageQueue::pop() {
+
+    switch (typ_kolejki) {
+        case PackageQueueType::FIFO:
+            kolejka.front();
+            kolejka.pop_front();
+
 
             break;
 
-        case LIFO:
+        case PackageQueueType::LIFO:
+            kolejka.back();
+            kolejka.pop_back();
 
             break;
-    }
-}
+    };
+};
 
 
 
