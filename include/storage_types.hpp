@@ -32,7 +32,7 @@ public:
 
 class IPackageQueue : public IPackageStockpile {
 public:
-    virtual Package pop() = 0;
+    virtual Package&& pop() = 0;
     virtual PackageQueueType get_queue_type() = 0;
 
     //virtual ~IPackageQueue() {}
@@ -41,20 +41,23 @@ public:
 
 class PackageQueue : public IPackageQueue {
 public:
-    PackageQueue();
-    PackageQueue(PackageQueueType);
+    PackageQueue(PackageQueueType typ) {
+        typ_kolejki = typ;
 
-    container_type kolejka;
+    };
 
-    bool empty() override {return 0;}
+
+
+    bool empty() override {return kolejka.empty();}
     void push(Package&&) override {}
-    size_type size() override { return 0; }
+    size_type size() override { return kolejka.size(); }
 
-    Package pop() override {}
+    Package&& pop() override {}
     PackageQueueType get_queue_type() override { return typ_kolejki; }
 
 private:
     PackageQueueType typ_kolejki;
+    container_type kolejka;
 };
 
 #endif //LAB10_STORAGE_TYPES_HPP
