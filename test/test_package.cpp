@@ -27,7 +27,7 @@ Package p2;
     Package p3;
     EXPECT_EQ(p3.get_id(), 2);
 }
-
+//
 //TEST(FabrykaPackageTest, moveOperationTest) {
 //    Package p1;
 //    Package p2;

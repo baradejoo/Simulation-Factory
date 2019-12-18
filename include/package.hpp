@@ -14,15 +14,14 @@ public:
     Package();
     Package(Package&& p);
 
-//    Package& operator=(Package& p);
+    //Package& operator = (Package& p);
     ElementID get_id() const {return id_;}
     ~Package();
 
 private:
     ElementID id_=0;
-    inline static ElementID id;
-    inline static std::set<ElementID> assigned_IDs_;
-    inline static std::set<ElementID> freed_IDs_;
+    static std::set<ElementID> assigned_IDs_;
+    static std::set<ElementID> freed_IDs_;
 
 };
 

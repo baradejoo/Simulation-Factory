@@ -5,7 +5,8 @@
 #include "package.hpp"
 #include <algorithm>
 
-
+std::set<ElementID> Package::assigned_IDs_;
+std::set<ElementID> Package::freed_IDs_;
 
 Package::Package() {
     if(!freed_IDs_.empty()){

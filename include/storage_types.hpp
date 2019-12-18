@@ -35,7 +35,7 @@ public:
     virtual Package&& pop() = 0;
     virtual PackageQueueType get_queue_type() = 0;
 
-    //virtual ~IPackageQueue() {}
+    virtual ~IPackageQueue() {}
 };
 
 
@@ -52,7 +52,7 @@ public:
     void push(Package&&) override {}
     size_type size() override { return kolejka.size(); }
 
-    Package&& pop() override {}
+    //Package&& pop() override {}
     PackageQueueType get_queue_type() override { return typ_kolejki; }
 
 private:
@@ -62,4 +62,4 @@ private:
 
 #endif //LAB10_STORAGE_TYPES_HPP
 //tymczasowo
-PackageQueue p();
+//PackageQueue p();
