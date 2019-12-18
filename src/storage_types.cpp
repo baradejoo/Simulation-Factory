@@ -2,11 +2,11 @@
 // Created by Robert on 16.12.2019.
 //
 
-#include <storage_types.hpp>
 #include "storage_types.hpp"
 
-/*
-PackageQue::PackageQueue(PackageQueueType) {
+
+
+PackageQueue::PackageQueue(PackageQueueType) {
     switch(PackageQueueType){
         case FIFO:
 
@@ -18,4 +18,5 @@ PackageQue::PackageQueue(PackageQueueType) {
     }
 }
 
-*/
+
+

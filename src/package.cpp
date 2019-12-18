@@ -9,8 +9,9 @@
 
 Package::Package() {
     if(!freed_IDs_.empty()){
-        id_ = *std::max_element(freed_IDs_.cbegin(), freed_IDs_.end());
+        id_ = *std::min_element(freed_IDs_.cbegin(), freed_IDs_.end());
         assigned_IDs_.insert(id_);
+        freed_IDs_.erase(id_);
     }else{
        id_ =  *std::max_element(assigned_IDs_.cbegin(), assigned_IDs_.end()) + 1;
        assigned_IDs_.insert(id_);
@@ -26,8 +27,9 @@ Package::~Package() {
     freed_IDs_.insert(id_);
 }
 
-Package& Package::operator=(Package&& p) {
-    id_ = p.id_;
-    return *this;
-}
+
+//Package& Package::operator=(Package&& p) {
+//    id_ = p.id_;
+//    return *this;
+//}
 
