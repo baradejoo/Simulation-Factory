@@ -5,8 +5,8 @@
 #include "storage_types.hpp"
 
 
-/*
-PackageQue::PackageQueue(PackageQueueType) {
+
+PackageQueue::PackageQueue(PackageQueueType) {
     switch(PackageQueueType){
         case FIFO:
 
@@ -18,4 +18,5 @@ PackageQue::PackageQueue(PackageQueueType) {
     }
 }
 
-*/
+
+

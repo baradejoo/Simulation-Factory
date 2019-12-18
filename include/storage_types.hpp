@@ -7,6 +7,7 @@
 
 #include <deque>
 #include <iostream>
+#include <list>
 #include "package.hpp"
 
 enum class PackageQueueType{
@@ -18,23 +19,40 @@ class const_iterator;
 class IPackageStockpile{
 public:
     using size_type = unsigned int;
+    using container_type = std::list<Package>::const_iterator;
 
     virtual void push(Package&&) = 0;
     virtual bool empty() = 0;
     virtual size_type size() = 0;
+
+    virtual ~IPackageStockpile() {}
 };
 
 
 class IPackageQueue : public IPackageStockpile {
 public:
-    virtual Package pop() = 0;
+    virtual Package&& pop() = 0;
     virtual PackageQueueType get_queue_type() = 0;
+
+    virtual ~IPackageQueue() {}
 };
 
 
-class PackageQue : public IPackageQueue {
+class PackageQueue : public IPackageQueue {
 public:
+    PackageQueue();
     PackageQueue(PackageQueueType);
+
+    bool empty() override {return 0;}
+    void push(Package&&) override {}
+    size_type size() override { return 0; }
+
+    Package&& pop() override {}
+    PackageQueueType get_queue_type() override {}
+
+
 };
 
 #endif //LAB10_STORAGE_TYPES_HPP
+//tymczasowo
+PackageQueue p();

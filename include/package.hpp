@@ -13,6 +13,7 @@ class Package {
 public:
     Package();
     Package(Package&& p);
+
 //    Package& operator=(Package& p);
     ElementID get_id() const {return id_;}
     ~Package();
