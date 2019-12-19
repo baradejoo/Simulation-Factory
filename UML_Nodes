@@ -33,7 +33,7 @@ package "Nodes" {
 
 	enum ReceiverType <<enumeration>> {
 	}
-	IPackageReceiver <.. ReceiverType : <<uses>>
+	IPackageReceiver ..> ReceiverType : <<uses>>
 
 
 	class ReceiverPreferences {
