@@ -3,6 +3,7 @@
 //
 #include "gtest/gtest.h"
 #include "package.hpp"
+#include "nodes.hpp"
 
 TEST(FabrykaPackageTest, creationTest) {
     Package p1;
