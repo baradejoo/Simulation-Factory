@@ -41,10 +41,7 @@ public:
 
 class PackageQueue : public IPackageQueue {
 public:
-    PackageQueue(PackageQueueType typ) {
-        typ_kolejki = typ;
-
-    };
+    PackageQueue(PackageQueueType typ): typ_kolejki(typ){}
 
 
 
