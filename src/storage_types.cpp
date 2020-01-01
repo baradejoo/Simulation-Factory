@@ -4,7 +4,7 @@
 
 #include "storage_types.hpp"
 
-Package PackageQueue::pop() {
+Package PackageQueue::pop(){
     switch(queue_type){
         case PackageQueueType::FIFO: {
             Package put_package = std::move(queue.front());
