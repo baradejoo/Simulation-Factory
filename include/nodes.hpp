@@ -29,7 +29,7 @@
 //    Time get_package_processing_start_time();
 //
 //    ReceiverType get_receiver_type() const override { return rec_tp; }
-//    ElementID  get_id() const override { return id_; }\
+//    ElementID  get_id() const override { return id_; }
 //    void receive_package(Package&&) override {};
 //
 //    ~Worker() = default;
