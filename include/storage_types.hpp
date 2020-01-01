@@ -18,24 +18,25 @@ class const_iterator;
 
 class IPackageStockpile{
 public:
-    using size_type = unsigned int;
-    //using container_type = std::list<Package>::const_iterator ;
-    using container_type = std::list<Package> ;
+    using containerIt = std::list<Package>::const_iterator;
 
-    virtual void push(Package&&) = 0;
+    virtual void push(Package&& package) = 0;
     virtual bool empty() = 0;
     virtual size_type size() = 0;
+    virtual containerIt begin() = 0;
+    virtual const containerIt cbegin() = 0;
+    virtual containerIt end() = 0;
+    virtual const containerIt cend() = 0;
 
     virtual ~IPackageStockpile() {}
 };
 
-
 class IPackageQueue : public IPackageStockpile {
 public:
-    virtual Package&& pop() = 0;
+    virtual Package pop() = 0;
     virtual PackageQueueType get_queue_type() = 0;
 
-    //virtual ~IPackageQueue() {}
+    virtual ~IPackageQueue() {}
 };
 
 
@@ -43,21 +44,21 @@ class PackageQueue : public IPackageQueue {
 public:
     PackageQueue(PackageQueueType type): queue_type(type){}
 
+    bool empty() override { return queue.empty(); }
+    void push(Package&& package) override { queue.emplace_back(std::move(package)); }
+    size_type size() override { return queue.size(); }
+    containerIt begin() override { return queue.begin(); }
+    const containerIt cbegin() override { return queue.cbegin(); };
+    containerIt end() override { return queue.end(); };
+    const containerIt cend() override { return queue.cend(); }
 
-    bool empty() override {return packages.empty();}
-    void push(Package&&) override {
-        packages.push_back(Package&&);
-    }
-    size_type size() override { return packages.size(); }
-
-    Package&& pop() override {}
+    Package pop() override;
     PackageQueueType get_queue_type() override { return queue_type; }
+
 
 private:
     PackageQueueType queue_type;
-    container_type packages;
+    std::list<Package> queue;
 };
 
 #endif //LAB10_STORAGE_TYPES_HPP
-//tymczasowo
-PackageQueue p();
