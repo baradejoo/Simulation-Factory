@@ -1,4 +1,3 @@
-
 //
 //#ifndef FABRYKA_NODES_HPP
 //#define FABRYKA_NODES_HPP
