@@ -37,6 +37,9 @@ public:
 class Worker : public IPackageReceiver{
 public:
     Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> q) : id_(id), pd_(pd), q_(std::move(q)) {}
+
+    Worker(Time t_);
+
     Worker(const Worker&) = delete;
     Worker& operator=(Worker&) = delete;
 
@@ -53,7 +56,7 @@ public:
 private:
     ElementID id_;
     TimeOffset pd_;
-    Time t_;
+    Time t_{};
     std::unique_ptr<PackageQueue> q_;
     std::optional<Package> WorkerBuffer = std::nullopt;
     ReceiverType rec_tp = ReceiverType::Worker;
@@ -79,14 +82,14 @@ public:
 
     void deliver_goods(Time t) { t_ = t;};
     TimeOffset get_delivery_interval() const { return di_; }
-    ElementID get_id() const {return id_; }
+    ElementID  get_id() const { return id_; }
 
     ~Ramp() = default;
 
 private:
     ElementID id_;
     TimeOffset di_;
-    Time t_;
+    Time t_{};
 };
 
 class ReceiverPreferences {
@@ -100,8 +103,16 @@ public:
 
     void remove_reciever(IPackageReceiver* r);
 
-    IPackageReceiver* choose_receiver;
+    IPackageReceiver* choose_receiver();
+
+    const_iterator begin() = { return preferences_list.begin(); };
+    const const_iterator cbegin() = { return preferences_list.cbegin(); };
+    const_iterator end() = { return preferences_list.end(); };
+    const const_iterator cend() = { return preferences_list.cend(); };
+
+
 private:
     IPackageReceiver* r;
+    preferences_t preferences_list;
 };
 #endif //FABRYKA_NODES_HPP
