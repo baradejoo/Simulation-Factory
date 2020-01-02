@@ -15,7 +15,7 @@ enum class ReceiverType{
 
 class IPackageReceiver{
 public:
-    virtual void receive_package(Package&& p) = 0;
+    virtual void receive_package(Package&& prod) = 0;
     virtual ReceiverType get_receiver_type() const = 0;
     virtual ElementID get_id() const = 0;
 
@@ -28,22 +28,22 @@ public:
     Worker(const Worker&) = delete;
     Worker& operator=(Worker&) = delete;
 
-    void do_work(Time t);
-    TimeOffset get_processing_duration();
-    Time get_package_processing_start_time();
+    void do_work(Time t) { t_ = t; }
+    TimeOffset get_processing_duration() {return pd_; };
+    Time get_package_processing_start_time() { return t_; }
 
     ReceiverType get_receiver_type() const override { return rec_tp; }
     ElementID  get_id() const override { return id_; }
-    void receive_package(Package&& p) override {};
+    void receive_package(Package&& prod) override {};
 
-    ~Worker() override = default;
+    ~Worker() = default;
 
 private:
     ElementID id_;
     TimeOffset pd_;
+    Time t_;
     std::unique_ptr<PackageQueue> q_;
     ReceiverType rec_tp = ReceiverType::Worker;
-
 };
 
 class PackageSender {
