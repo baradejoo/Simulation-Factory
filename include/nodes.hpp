@@ -6,8 +6,13 @@
 #define FABRYKA_NODES_HPP
 
 #include <map>
+#include <memory>
+#include <optional>
+#include <functional>
 #include "package.hpp"
 #include "storage_types.hpp"
+#include "helpers.hpp"
+
 
 enum class ReceiverType{
     Ramp, Worker, Storehouse
@@ -15,9 +20,16 @@ enum class ReceiverType{
 
 class IPackageReceiver{
 public:
+    using pacReceiverIt = std::list<Package>::const_iterator;
+
     virtual void receive_package(Package&& prod) = 0;
     virtual ReceiverType get_receiver_type() const = 0;
     virtual ElementID get_id() const = 0;
+
+    virtual pacReceiverIt begin() = 0;
+    virtual const pacReceiverIt cbegin() = 0;
+    virtual pacReceiverIt end() = 0;
+    virtual const pacReceiverIt cend() = 0;
 
     virtual ~IPackageReceiver() {};
 };
@@ -29,12 +41,12 @@ public:
     Worker& operator=(Worker&) = delete;
 
     void do_work(Time t) { t_ = t; }
-    TimeOffset get_processing_duration() {return pd_; };
-    Time get_package_processing_start_time() { return t_; }
+    TimeOffset get_processing_duration() const {return pd_; };
+    Time get_package_processing_start_time() const { return t_; }
 
     ReceiverType get_receiver_type() const override { return rec_tp; }
     ElementID  get_id() const override { return id_; }
-    void receive_package(Package&& prod) override {};
+    void receive_package(Package&& prod) override;
 
     ~Worker() = default;
 
@@ -43,22 +55,21 @@ private:
     TimeOffset pd_;
     Time t_;
     std::unique_ptr<PackageQueue> q_;
+    std::optional<Package> WorkerBuffer = std::nullopt;
     ReceiverType rec_tp = ReceiverType::Worker;
 };
 
 class PackageSender {
 protected:
-    void push_package(Package);
+    void push_package(Package pack);
 
 public:
     void send_package();
-
     std::optional<Package> get_sending_buffer();
-
-    RecieverPreferences receiver_preferences_;
+    ReceiverPreferences receiver_preferences_;
 
 private:
-
+    std::optional<Package> PackageSenderBuffor = std::nullopt;
 
 };
 
@@ -66,17 +77,16 @@ class Ramp : public PackageSender{
 public:
     Ramp(ElementID id, TimeOffset di) : id_(id), di_(di) {}
 
-    void deliver_goods(Time t);
-    TimeOffset get_delivery_interval();
-    ElementID get_id ();
-
-
+    void deliver_goods(Time t) { t_ = t;};
+    TimeOffset get_delivery_interval() const { return di_; }
+    ElementID get_id() const {return id_; }
 
     ~Ramp() = default;
 
 private:
     ElementID id_;
     TimeOffset di_;
+    Time t_;
 };
 
 class ReceiverPreferences {
