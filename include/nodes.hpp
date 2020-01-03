@@ -18,6 +18,24 @@ enum class ReceiverType{
     Ramp, Worker, Storehouse
 };
 
+
+class IPackageReceiver{
+public:
+    using pacReceiverIt = std::list<Package>::const_iterator;
+
+    virtual void receive_package(Package&& prod) = 0;
+    virtual ReceiverType get_receiver_type() const = 0;
+    virtual ElementID get_id() const = 0;
+
+    virtual pacReceiverIt begin() = 0;
+    virtual const pacReceiverIt cbegin() = 0;
+    virtual pacReceiverIt end() = 0;
+    virtual const pacReceiverIt cend() = 0;
+
+    virtual ~IPackageReceiver() {};
+};
+
+
 class ReceiverPreferences {
 public:
     using preferences_I = std::map<IPackageReceiver*, double>;
@@ -39,21 +57,6 @@ private:
     Probal_gener rng_;
 };
 
-class IPackageReceiver{
-public:
-    using pacReceiverIt = std::list<Package>::const_iterator;
-
-    virtual void receive_package(Package&& prod) = 0;
-    virtual ReceiverType get_receiver_type() const = 0;
-    virtual ElementID get_id() const = 0;
-
-    virtual pacReceiverIt begin() = 0;
-    virtual const pacReceiverIt cbegin() = 0;
-    virtual pacReceiverIt end() = 0;
-    virtual const pacReceiverIt cend() = 0;
-
-    virtual ~IPackageReceiver() {};
-};
 
 class PackageSender {
 protected:

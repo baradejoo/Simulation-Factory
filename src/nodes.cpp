@@ -24,7 +24,8 @@ void PackageSender::push_package(Package pack) {
 
 void Ramp::deliver_goods(Time t) {
     if(t%di_ == 0){
-
+        Package package;
+        push_package(std::move(package));
     }
 }
 
