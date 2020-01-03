@@ -46,6 +46,7 @@ public:
 
     bool empty() override { return queue.empty(); }
     void push(Package&& package) override { queue.emplace_back(std::move(package)); }
+
     size_type size() override { return queue.size(); }
     containerIt begin() override { return queue.begin(); }
     const containerIt cbegin() override { return queue.cbegin(); };
@@ -54,7 +55,6 @@ public:
 
     Package pop() override;
     PackageQueueType get_queue_type() override { return queue_type; }
-
 
 private:
     PackageQueueType queue_type;

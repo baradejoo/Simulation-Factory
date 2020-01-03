@@ -17,7 +17,7 @@ add_executable(Fabryka__debug ${SOURCE_FILES} fabryka.cpp #src/storage_types.cpp
         )
 set(SOURCES_FILES_TESTS
         test/test_package.cpp
-        )
+        test/test_nodes.cpp)
 
 add_executable(Fabryka__test ${SOURCE_FILES} ${SOURCES_FILES_TESTS} test/main_gtest.cpp)
 

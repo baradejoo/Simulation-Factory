@@ -101,10 +101,32 @@ private:
 };
 
 
-//pacReceiverIt begin() override { return q_->begin(); }
-//const pacReceiverIt cbegin() override { return q_->cbegin(); }
-//pacReceiverIt end() override { return q_->end(); }
-//const pacReceiverIt cend() override { return q_->cend(); } //metody do Storehouse
+class Storehouse : public IPackageReceiver {
+public:
+    Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d) : id_(id), d_(std::move(d)) {}
+
+    ReceiverType get_receiver_type() const override { return rec_tp; }
+
+    ElementID get_id() const override { return id_; }
+
+    void receive_package(Package &&prod) override { prod.get_id(); };
+
+    pacReceiverIt begin() override { return d_->begin(); };
+
+    const pacReceiverIt cbegin() override { return d_->cbegin(); };
+
+    pacReceiverIt end() override { return d_->end(); };
+
+    const pacReceiverIt cend() override { return d_->cend(); };
+
+    ~Storehouse() = default;
+
+private:
+    ElementID id_;
+    std::unique_ptr<IPackageStockpile> d_;
+    ReceiverType rec_tp = ReceiverType::Storehouse;
+
+};
 
 
 class Ramp : public PackageSender{
