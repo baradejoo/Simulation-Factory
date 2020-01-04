@@ -24,8 +24,7 @@ void PackageSender::push_package(Package pack) {
 
 void Ramp::deliver_goods(Time t) {
     if(t%di_ == 0){
-        Package package;
-        push_package(std::move(package));
+
     }
 }
 
@@ -40,14 +39,44 @@ void Worker::receive_package(Package&& prod) {
 //    }
 //}
 
-//void ReceiverPreferences::add_reciever(IPackageReceiver* r) {
-//    //preferences_t.ins
-//}
-//
-//void ReceiverPreferences::remove_reciever(IPackageReceiver* r) {
-//   //preferences_t.erase()
-//}
-//
+void ReceiverPreferences::add_receiver(IPackageReceiver* r) {
+    double sum_temp = 0.0;
+
+    preferences_list_.insert(std::pair<IPackageReceiver*, double> (r,0))
+
+    for( auto& [key, val] : preferences_list_ )
+    {
+        key = pg()*(1.0-pg())
+        sum_temp += key
+    }
+
+    auto it = preferences_list_.end();
+    it--;
+    it->second = (1.0-sum_temp);
+
+}
+
+void ReceiverPreferences::remove_receiver(IPackageReceiver* r) {
+    double sum_temp = 0.0;
+    //auto it = preferences_list_.end();
+
+    preferences_list_.erase(std::pair<IPackageReceiver*, double> (r,0))
+
+    for( auto& [key, val] : preferences_list_ )
+    {
+        key = pg()*(1.0-pg())
+        sum_temp += key
+    }
+
+    //auto it = preferences_list_.end()-- ->second = 1.0-sum_temp;
+    auto it = preferences_list_.end();
+    it--;
+    it->second = (1.0-sum_temp);
+
+}
+
 //IPackageReceiver* ReceiverPreferences::choose_receiver() {
 //    //for (preferences_t it = begin(); it != end(); it++)
 //}
+
+
