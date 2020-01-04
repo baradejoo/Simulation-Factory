@@ -75,8 +75,18 @@ void ReceiverPreferences::remove_receiver(IPackageReceiver* r) {
 
 }
 
-//IPackageReceiver* ReceiverPreferences::choose_receiver() {
+bool compare(std::pair <std::string, int> p, std::pair <std::string, int> q )
+{
+    return p.second < q.second;
+}
+
+IPackageReceiver* ReceiverPreferences::choose_receiver() {
 //    //for (preferences_t it = begin(); it != end(); it++)
-//}
+
+
+    std::pair<IPackageReceiver*, double> max = (*std::max_element(preferences_list_.begin(), preferences_list_.end(), compare));
+    return max.first;
+
+}
 
 
