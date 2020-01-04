@@ -14,7 +14,10 @@ using TimeOffset = unsigned int;
 using Time = unsigned int;
 using size_type = unsigned int;
 
-//using ProbabilityGenerator = std::function<void()> dupa = probability_generator_1();
+using ProbabilityGenerator = std::function<double()>;
+
+//ProbabilityGenerator pg probability_generator_1()
+
 
 
 #endif
