@@ -18,6 +18,29 @@ enum class ReceiverType{
     Ramp, Worker, Storehouse
 };
 
+class ReceiverPreferences {
+public:
+    using preferences_t = std::map<IPackageReceiver*, double>;
+    using const_iterator = preferences_t::const_iterator;
+    //using iterator = preferences_t::iterator;
+
+    void add_receiver(IPackageReceiver* r);
+    void remove_receiver(IPackageReceiver* r);
+    IPackageReceiver* choose_receiver();
+    ReceiverPreferences(ProbabilityGenerator pg);
+
+    //ReceiverPreferences( preferences_t preferences_list): preferences_list_(preferences_list) {}
+
+    const_iterator begin() = { return preferences_list_.begin(); };
+    const const_iterator cbegin() = { return preferences_list_.cbegin(); };
+    const_iterator end() = { return preferences_list_.end(); };
+    const const_iterator cend() = { return preferences_list_.cend(); };
+
+
+private:
+    preferences_t preferences_list_;
+    ProbabilityGenerator pg;
+};
 
 class IPackageReceiver{
 public:
@@ -35,29 +58,6 @@ public:
     virtual ~IPackageReceiver() {};
 };
 
-
-class ReceiverPreferences {
-public:
-    using preferences_I = std::map<IPackageReceiver*, double>;
-    using RecPreCIt = preferences_t::const_iterator;
-    using RecPreIt = preferences_t::iterator;
-
-    void add_reciever(IPackageReceiver* r);
-    void remove_reciever(IPackageReceiver* r);
-    IPackageReceiver* choose_receiver();
-
-    RecPreIt begin() = { return preferences_list_.begin(); };
-    const RecPreCIt cbegin() = { return preferences_list_.cbegin(); };
-    RecPreIt end() = { return preferences_list_.end(); };
-    const RecPreCIt cend() = { return preferences_list_.cend(); };
-
-
-private:
-    preferences_I preferences_list_;
-    Probal_gener rng_;
-};
-
-
 class PackageSender {
 protected:
     void push_package(Package pack);
@@ -74,7 +74,7 @@ private:
 
 class Worker : public IPackageReceiver, public PackageSender{
 public:
-    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> q) : id_(id), pd_(pd), q_(std::move(q)) {}
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q) : id_(id), pd_(pd), q_(std::move(q)) {}
 
     Worker(const Worker&) = delete;
     Worker& operator=(Worker&) = delete;
@@ -109,17 +109,12 @@ public:
     Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d) : id_(id), d_(std::move(d)) {}
 
     ReceiverType get_receiver_type() const override { return rec_tp; }
-
     ElementID get_id() const override { return id_; }
-
     void receive_package(Package &&prod) override { prod.get_id(); };
 
     pacReceiverIt begin() override { return d_->begin(); };
-
     const pacReceiverIt cbegin() override { return d_->cbegin(); };
-
     pacReceiverIt end() override { return d_->end(); };
-
     const pacReceiverIt cend() override { return d_->cend(); };
 
     ~Storehouse() = default;
