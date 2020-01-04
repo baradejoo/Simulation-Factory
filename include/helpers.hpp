@@ -11,10 +11,10 @@
 #include <random>
 
 
-//std::random_device rd;
-//std::mt19937 rng(rd());
-//
-//double probability_generator_1() {
-//    return std::generate_canonical<double, 10>(rng);}
+std::random_device rd;
+std::mt19937 rng(rd());
+
+double pg() {
+   return std::generate_canonical<double, 10>(rng);}
 
 #endif //FABRYKA_HELPERS_HPP
