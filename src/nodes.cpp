@@ -45,13 +45,14 @@ void Storehouse::receive_package(Package&& pck)
 
 }
 
-//Worker::Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q)
-//{
-//    id_ = id;
-//    pd_ = pd;
-//    q_ = std::move(q);
-//    preferences_list_ = preferences_list;
-//}
+Worker::Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q, ReceiverPreferences preferences_list)
+        :PackageSender(preferences_list)
+{
+    id_ = id;
+    pd_ = pd;
+    q_ = std::move(q);
+
+}
 
 void PackageSender::send_package()
 {
@@ -61,6 +62,8 @@ void PackageSender::send_package()
         PackageSenderBuffor.reset();
     }
 }
+
+
 
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* r) {

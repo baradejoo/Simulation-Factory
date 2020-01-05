@@ -62,6 +62,10 @@ private:
 
 class PackageSender {
 protected:
+public:
+   PackageSender(const ReceiverPreferences &preferencesList) : preferences_list_(preferencesList) {}
+
+protected:
     void push_package(Package&& pack);
 
 public:
@@ -80,7 +84,8 @@ private:
 
 class Worker : public IPackageReceiver, public PackageSender{
 public:
-    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q): id_(id), pd_(pd), q_(std::move(q)) {}
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q, ReceiverPreferences preferences_list);
+
 
     //Worker(ReceiverPreferences preferences_list_) : Worker(ReceiverPreferences preferences_list_) {};
 
