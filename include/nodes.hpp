@@ -44,14 +44,15 @@ public:
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
     IPackageReceiver* choose_receiver();
-    ReceiverPreferences(ProbabilityGenerator pg) {ProbabilityGenerator random_generator = pg;};
 
-    //ReceiverPreferences( preferences_t preferences_list): preferences_list_(preferences_list) {}
+    ReceiverPreferences(ProbabilityGenerator pg) { ProbabilityGenerator random_generator = pg;};
 
-//    const_iterator begin() = { return preferences_list_.begin(); };
-//    const const_iterator cbegin() = { return preferences_list_.cbegin(); };
-//    const_iterator end() = { return preferences_list_.end(); };
-//    const const_iterator cend() = { return preferences_list_.cend(); };
+    ReceiverPreferences( preferences_t preferences_list): preferences_list_(preferences_list) {}
+
+    iterator begin()  { return preferences_list_.begin(); };
+    const const_iterator cbegin()  { return preferences_list_.cbegin(); };
+    iterator end()  { return preferences_list_.end(); };
+    const const_iterator cend()  { return preferences_list_.cend(); };
 
 
 private:
@@ -61,15 +62,17 @@ private:
 
 class PackageSender {
 protected:
-    void push_package(Package pack);
+    void push_package(Package&& pack);
 
 public:
     void send_package();
     std::optional<Package> get_sending_buffer() { return std::move(PackageSenderBuffor); }
+    //std::optional<Package> get_sending_buffer() const { return PackageSenderBuffor;};
     ReceiverPreferences preferences_list_;
 
 private:
     std::optional<Package> PackageSenderBuffor = std::nullopt;
+    //std::optional<Package> PackageSenderBuffor;
 
 };
 
@@ -77,10 +80,12 @@ private:
 
 class Worker : public IPackageReceiver, public PackageSender{
 public:
-    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q) : id_(id), pd_(pd), q_(std::move(q)) {}
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q): id_(id), pd_(pd), q_(std::move(q)) {}
 
-    Worker(const Worker&) = delete;
-    Worker& operator=(Worker&) = delete;
+    //Worker(ReceiverPreferences preferences_list_) : Worker(ReceiverPreferences preferences_list_) {};
+
+    //Worker(const Worker&) = delete;
+    //Worker& operator=(Worker&) = delete;
 
     void do_work(Time t);
     TimeOffset get_processing_duration() const {return pd_; };
@@ -88,7 +93,7 @@ public:
 
     ReceiverType get_receiver_type() const override { return rec_tp; }
     ElementID  get_id() const override { return id_; }
-    void receive_package(Package&& prod) override;
+    void receive_package(Package&& package) override;
 
     pacReceiverIt begin() override { return q_->begin(); }
     const pacReceiverIt cbegin() override { return q_->cbegin(); }
@@ -98,10 +103,10 @@ public:
     ~Worker() = default;
 
 private:
-    ElementID id_;
-    TimeOffset pd_;
+    ElementID id_{};
+    TimeOffset pd_{};
     Time t_ = 0;
-    std::unique_ptr<PackageQueue> q_ = nullptr;
+    std::unique_ptr<IPackageQueue> q_;
     std::optional<Package> WorkerBuffer = std::nullopt;
     ReceiverType rec_tp = ReceiverType::Worker;
 };
@@ -113,7 +118,7 @@ public:
 
     ReceiverType get_receiver_type() const override { return rec_tp; }
     ElementID get_id() const override { return id_; }
-    void receive_package(Package &&prod) override { prod.get_id(); };
+    void receive_package(Package &&prod) override;
 
     pacReceiverIt begin() override { return d_->begin(); };
     const pacReceiverIt cbegin() override { return d_->cbegin(); };
@@ -132,13 +137,14 @@ private:
 
 class Ramp : public PackageSender{
 public:
-    Ramp(ElementID id, TimeOffset di) : id_(id), di_(di) {}
-
+    Ramp(ElementID id, TimeOffset di, ReceiverPreferences preferences_list_)
+            : id_(id), di_(di), preferences_list_(preferences_list_) {}
+    //ReceiverPreferences preferences_list_;
     void deliver_goods(Time t);
     TimeOffset get_delivery_interval() const { return di_; }
     ElementID  get_id() const { return id_; }
 
-    ~Ramp() = default;
+    //~Ramp() = default;
 
 private:
     ElementID id_;
