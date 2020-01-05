@@ -29,8 +29,6 @@ void Ramp::deliver_goods(Time t) {
     }
 }
 
-Ramp::Ramp(ElementID id, TimeOffset di) : id_(id), di_(di) {}
-
 void Worker::receive_package(Package&& prod) {
     q_->push(std::move(prod));
 }
