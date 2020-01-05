@@ -42,12 +42,17 @@ void Worker::receive_package(Package&& prod) {
 void ReceiverPreferences::add_receiver(IPackageReceiver* r) {
     double sum_temp = 0.0;
 
-    preferences_list_.insert(std::pair<IPackageReceiver*, double> (r,0))
+    preferences_list_.insert({r,0});
 
-    for( auto& [key, val] : preferences_list_ )
+//    for( auto& [key, val] : preferences_list_ )
+//    {
+//        key = pg()*(1.0-pg())
+//        sum_temp += key
+//    }
+    for(auto iterator = preferences_list_.begin(); iterator != preferences_list_.end(); iterator++)
     {
-        key = pg()*(1.0-pg())
-        sum_temp += key
+        iterator ->first = pg()*(1.0-pg())
+        sum_temp += iterator ->first
     }
 
     auto it = preferences_list_.end();
@@ -60,12 +65,17 @@ void ReceiverPreferences::remove_receiver(IPackageReceiver* r) {
     double sum_temp = 0.0;
     //auto it = preferences_list_.end();
 
-    preferences_list_.erase(std::pair<IPackageReceiver*, double> (r,0))
+    preferences_list_.erase(r);
 
-    for( auto& [key, val] : preferences_list_ )
+//    for( auto& [key, val] : preferences_list_ )
+//    {
+//        key = pg()*(1.0-pg())
+//        sum_temp += key
+//    }
+    for(auto iterator = preferences_list_.begin(); iterator != preferences_list_.end(); iterator++)
     {
-        key = pg()*(1.0-pg())
-        sum_temp += key
+        iterator ->first = pg()*(1.0-pg())
+        sum_temp += iterator ->first
     }
 
     //auto it = preferences_list_.end()-- ->second = 1.0-sum_temp;
