@@ -133,7 +133,7 @@ TEST(ReceiverPreferencesTest, CorectReceiver) {
     Worker w1(1, 1, std::move(ptr1));
     Worker w2(2, 2, std::move(ptr2));
 
-    std::function<double(void)> rng = // funckja losujaca;
+    std::function<double(void)> rng = random_generator();// funckja losujaca;
     ReceiverPreferences pref(rng);
 
     IPackageReceiver* rec;
