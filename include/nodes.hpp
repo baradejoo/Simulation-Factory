@@ -18,29 +18,6 @@ enum class ReceiverType{
     Ramp, Worker, Storehouse
 };
 
-class ReceiverPreferences {
-public:
-    using preferences_t = std::map<IPackageReceiver*, double>;
-    using const_iterator = preferences_t::const_iterator;
-    using iterator = preferences_t::iterator;
-
-    void add_receiver(IPackageReceiver* r);
-    void remove_receiver(IPackageReceiver* r);
-    IPackageReceiver* choose_receiver();
-    ReceiverPreferences(ProbabilityGenerator pg);
-
-    //ReceiverPreferences( preferences_t preferences_list): preferences_list_(preferences_list) {}
-
-    const_iterator begin() = { return preferences_list_.begin(); };
-    const const_iterator cbegin() = { return preferences_list_.cbegin(); };
-    const_iterator end() = { return preferences_list_.end(); };
-    const const_iterator cend() = { return preferences_list_.cend(); };
-
-
-private:
-    preferences_t preferences_list_;
-    ProbabilityGenerator pg;
-};
 
 class IPackageReceiver{
 public:
@@ -58,6 +35,30 @@ public:
     virtual ~IPackageReceiver() {};
 };
 
+class ReceiverPreferences {
+public:
+    using preferences_t = std::map<IPackageReceiver*, double>;
+    using const_iterator = preferences_t::const_iterator;
+    using iterator = preferences_t::iterator;
+
+    void add_receiver(IPackageReceiver* r);
+    void remove_receiver(IPackageReceiver* r);
+    IPackageReceiver* choose_receiver();
+    ReceiverPreferences (ProbabilityGenerator pg);
+
+    //ReceiverPreferences( preferences_t preferences_list): preferences_t_(preferences_list) {}
+
+//    const_iterator begin() = { return preferences_list_.begin(); };
+//    const const_iterator cbegin() = { return preferences_list_.cbegin(); };
+//    const_iterator end() = { return preferences_list_.end(); };
+//    const const_iterator cend() = { return preferences_list_.cend(); };
+
+
+private:
+    preferences_t preferences_t_;
+    ProbabilityGenerator pg;
+};
+
 class PackageSender {
 protected:
     void push_package(Package pack);
@@ -65,12 +66,14 @@ protected:
 public:
     void send_package();
     std::optional<Package> get_sending_buffer() { return std::move(PackageSenderBuffor); }
-    ReceiverPreferences receiver_preferences_;
+    ReceiverPreferences preferences_list_;
 
 private:
     std::optional<Package> PackageSenderBuffor = std::nullopt;
 
 };
+
+
 
 class Worker : public IPackageReceiver, public PackageSender{
 public:
@@ -134,12 +137,15 @@ public:
     void deliver_goods(Time t);
     TimeOffset get_delivery_interval() const { return di_; }
     ElementID  get_id() const { return id_; }
+    ReceiverType get_receiver_type() const override { return rec_tp; }
+
 
     ~Ramp() = default;
 
 private:
     ElementID id_;
     TimeOffset di_;
+    ReceiverType rec_tp = ReceiverType::Ramp;
 };
 
 
