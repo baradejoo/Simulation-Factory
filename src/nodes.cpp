@@ -1,4 +1,5 @@
 
+
 // Created by Kamil Baradziej on 28/12/2019.
 
 
@@ -32,7 +33,6 @@ void Worker::receive_package(Package&& prod) {
     q_->push(std::move(prod));
 }
 
-
 void PackageSender::send_package()
 {
     if(PackageSenderBuffor)
@@ -42,51 +42,34 @@ void PackageSender::send_package()
     }
 }
 
+
+
+
 void ReceiverPreferences::add_receiver(IPackageReceiver* r) {
-    double sum_temp = 0.0;
-    double random_number = 0.0;
+    //double sum_temp = 0.0;
+    double random_number = pg();
 
-    preferences_list_.insert({r,0});
-
-    for( auto& [key, val] : preferences_list_ )
-    {
-        key = random_number*(1.0-random_number)
-        sum_temp += key
+    if (preferences_list_.empty()){
+        preferences_list_.insert(std::make_pair(r,1));
     }
-//    for(auto iterator = preferences_list_.begin(); iterator != preferences_list_.end(); iterator++)
-//    {
-//        iterator ->first = pg()*(1.0-pg())
-//        sum_temp += iterator ->first
-//    }
+    preferences_list_.insert(std::make_pair(r, random_number));
+    double sum_temp = 1 + random_number;
+    for ( auto& [key, value]: preferences_list_){
+        value = value/sum_temp;
+    }
 
-    auto it = preferences_list_.end();
-    it--;
-    it->second = (1.0-sum_temp);
 
 }
 
 void ReceiverPreferences::remove_receiver(IPackageReceiver* r) {
-    double sum_temp = 0.0;
-    double random_number = 0.0;
+    double random_number = pg();
 
     preferences_list_.erase(r);
 
-    for( auto& [key, val] : preferences_list_ )
-    {
-        key = random_number*(1.0-random_number)
-        sum_temp += key
+    double sum_temp = 1 + random_number;
+    for ( auto& [key, value]: preferences_list_){
+        value = value/sum_temp;
     }
-//    for(auto iterator = preferences_list_.begin(); iterator != preferences_list_.end(); iterator++)
-//    {
-//        iterator ->first = pg()*(1.0-pg())
-//        sum_temp += iterator ->first
-//    }
-
-    //auto it = preferences_list_.end()-- ->second = 1.0-sum_temp;
-    auto it = preferences_list_.end();
-    it--;
-    it->second = (1.0-sum_temp);
-
 }
 
 bool compare(std::pair <std::string, int> p, std::pair <std::string, int> q )
@@ -95,12 +78,11 @@ bool compare(std::pair <std::string, int> p, std::pair <std::string, int> q )
 }
 
 IPackageReceiver* ReceiverPreferences::choose_receiver() {
-//    //for (preferences_t it = begin(); it != end(); it++)
-
-
     std::pair<IPackageReceiver*, double> max = (*std::max_element(preferences_list_.begin(), preferences_list_.end(), compare));
     return max.first;
-
 }
+
+
+
 
 
