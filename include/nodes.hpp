@@ -142,9 +142,10 @@ private:
 
 class Ramp : public PackageSender{
 public:
-    Ramp(ElementID id, TimeOffset di, ReceiverPreferences preferences_list_)
-            : id_(id), di_(di), preferences_list_(preferences_list_) {}
-    //ReceiverPreferences preferences_list_;
+    Ramp(ElementID id, TimeOffset di, ReceiverPreferences preferences_list)
+            :PackageSender(preferences_list), id_(id), di_(di){}
+
+            //ReceiverPreferences preferences_list_;
     void deliver_goods(Time t);
     TimeOffset get_delivery_interval() const { return di_; }
     ElementID  get_id() const { return id_; }
