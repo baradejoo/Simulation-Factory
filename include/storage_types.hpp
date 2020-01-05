@@ -36,7 +36,7 @@ public:
     virtual Package pop() = 0;
     virtual PackageQueueType get_queue_type() = 0;
 
-    virtual ~IPackageQueue() {}
+    //virtual ~IPackageQueue() {}
 };
 
 
@@ -45,7 +45,7 @@ public:
     PackageQueue(PackageQueueType type): queue_type(type){}
 
     bool empty() override { return queue.empty(); }
-    void push(Package&& package) override { queue.emplace_back(std::move(package)); }
+    void push(Package&& package) override {queue.push_back(std::move(package));}
 
     size_type size() override { return queue.size(); }
     containerIt begin() override { return queue.begin(); }
