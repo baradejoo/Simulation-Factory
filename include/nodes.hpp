@@ -44,9 +44,9 @@ public:
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
     IPackageReceiver* choose_receiver();
-    ReceiverPreferences(ProbabilityGenerator pg);
+    ReceiverPreferences (ProbabilityGenerator pg);
 
-    //ReceiverPreferences( preferences_t preferences_list): preferences_list_(preferences_list) {}
+    //ReceiverPreferences( preferences_t preferences_list): preferences_t_(preferences_list) {}
 
 //    const_iterator begin() = { return preferences_list_.begin(); };
 //    const const_iterator cbegin() = { return preferences_list_.cbegin(); };
@@ -55,7 +55,7 @@ public:
 
 
 private:
-    preferences_t preferences_list_;
+    preferences_t preferences_t_;
     ProbabilityGenerator pg;
 };
 
@@ -137,12 +137,15 @@ public:
     void deliver_goods(Time t);
     TimeOffset get_delivery_interval() const { return di_; }
     ElementID  get_id() const { return id_; }
+    ReceiverType get_receiver_type() const override { return rec_tp; }
+
 
     ~Ramp() = default;
 
 private:
     ElementID id_;
     TimeOffset di_;
+    ReceiverType rec_tp = ReceiverType::Ramp;
 };
 
 

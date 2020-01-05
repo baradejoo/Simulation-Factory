@@ -33,11 +33,14 @@ void Worker::receive_package(Package&& prod) {
 }
 
 
-//void PackageSender::send_package() {
-//    if(PackageSenderBuffor){
-//
-//    }
-//}
+void PackageSender::send_package()
+{
+    if(PackageSenderBuffor)
+    {
+        preferences_list_.choose_receiver()->receive_package(std::move(*PackageSenderBuffor));
+        PackageSenderBuffor.reset();
+    }
+}
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* r) {
     double sum_temp = 0.0;
