@@ -16,7 +16,7 @@ using size_type = unsigned int;
 
 using ProbabilityGenerator = std::function<double()>;
 
-//ProbabilityGenerator pg probability_generator_1()
+
 
 
 
