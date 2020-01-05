@@ -43,8 +43,6 @@ void PackageSender::send_package()
 }
 
 
-
-
 void ReceiverPreferences::add_receiver(IPackageReceiver* r) {
     //double sum_temp = 0.0;
     double random_number = pg();
