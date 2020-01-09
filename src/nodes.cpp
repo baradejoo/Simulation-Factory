@@ -7,18 +7,6 @@
 
 #include "nodes.hpp"
 
-void Worker::do_work(Time t) {
-    if((t-t_)%pd_ == 0){
-        if(WorkerBuffer) {
-            push_package(std::move(*WorkerBuffer));
-            WorkerBuffer.reset();
-        }
-        WorkerBuffer.emplace(q_->pop());
-        //send_package();
-        t_=t;
-    }
-
-}
 
 
 void Ramp::deliver_goods(Time t)
@@ -41,14 +29,7 @@ void Storehouse::receive_package(Package&& pck)
 
 }
 
-Worker::Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q, ReceiverPreferences preferences_list)
-        :PackageSender(preferences_list)
-{
-    id_ = id;
-    pd_ = pd;
-    q_ = std::move(q);
 
-}
 //=========== PackageSender - Function definitions ===========//
 
 void PackageSender::send_package(){
@@ -70,6 +51,37 @@ std::optional<Package> PackageSender::get_sending_buffer(){
 }
 
 //=============================================================//
+//=============== Worker - Function definitions ===============//
+
+Worker::Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> q){
+    id_ = id;
+    pd_ = pd;
+    q_ = std::move(q);
+}
+
+void Worker::do_work(Time t) {
+   if(!(q_ -> empty()) && !worker_buffer_){
+       worker_buffer_ = q_ -> pop();
+       t_ = t;
+   }
+   if(t-t_ == pd_-1 && worker_buffer_){
+       push_package(std::move(*worker_buffer_));
+       worker_buffer_.reset();
+   }
+}
+
+void Worker::receive_package(Package&& package){
+    q_ -> push(std::move(package));
+}
+
+
+
+
+
+
+
+
+
 
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* r) {
