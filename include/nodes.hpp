@@ -43,9 +43,10 @@ public:
 
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
+
     IPackageReceiver* choose_receiver();
 
-    ReceiverPreferences(ProbabilityGenerator pg) { ProbabilityGenerator random_generator = pg;};
+    ReceiverPreferences(ProbabilityGenerator probability_generator) { ProbabilityGenerator random_generator = probability_generator;};
 
     ReceiverPreferences( preferences_t preferences_list): preferences_list_(preferences_list) {}
 
@@ -57,7 +58,7 @@ public:
 
 private:
     preferences_t preferences_list_;
-    ProbabilityGenerator pg;
+    ProbabilityGenerator probability_generator;
 };
 
 class PackageSender {

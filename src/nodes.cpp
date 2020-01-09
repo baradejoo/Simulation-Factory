@@ -103,7 +103,7 @@ void ReceiverPreferences::remove_receiver(IPackageReceiver* r) {
 
 IPackageReceiver* ReceiverPreferences::choose_receiver()
 {
-    double number = pg();
+    double number = probability_generator();
     double sum = 0;
     for (const auto &item: preferences_list_)
     {
