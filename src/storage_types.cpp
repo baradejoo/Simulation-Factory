@@ -1,6 +1,4 @@
-//
-// Created by Robert on 16.12.2019.
-//
+// Kamil Baradziej, 302819
 
 #include "storage_types.hpp"
 

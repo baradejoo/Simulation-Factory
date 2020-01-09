@@ -1,6 +1,4 @@
-// <<interface>> IPackageStockpile, <<interface>> IPackageQueue //
-// <<class>> PackageQueue //
-// <<enumeration>> PackageQueueType //
+// Kamil Baradziej, 302819
 
 #ifndef LAB10_STORAGE_TYPES_HPP
 #define LAB10_STORAGE_TYPES_HPP

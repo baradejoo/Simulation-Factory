@@ -9,7 +9,6 @@
 #include <memory>
 #include <optional>
 #include <functional>
-#include "package.hpp"
 #include "storage_types.hpp"
 #include "helpers.hpp"
 #include "config.hpp"
@@ -24,8 +23,8 @@ class IPackageReceiver{
 public:
     using pacReceiverIt = std::list<Package>::const_iterator;
 
-    virtual void receive_package(Package&& prod) = 0;
-    virtual ReceiverType get_receiver_type() const = 0;
+    virtual void receive_package(Package&& package) = 0;
+    //virtual ReceiverType get_receiver_type() const = 0; // TODO in FACTORY
     virtual ElementID get_id() const = 0;
 
     virtual pacReceiverIt begin() = 0;
@@ -62,27 +61,24 @@ private:
     ProbabilityGenerator probability_generator;
 };
 
+//=========== PackageSender ===========//
+
 class PackageSender {
 protected:
-public:
-   PackageSender(const ReceiverPreferences &preferencesList) : preferences_list_(preferencesList) {}
-
-protected:
-    void push_package(Package&& pack);
+    void push_package(Package&& package) { package_sender_buffor_=std::move(package); }
 
 public:
     void send_package();
-    std::optional<Package> get_sending_buffer() { return std::move(PackageSenderBuffor); }
-    //std::optional<Package> get_sending_buffer() const { return PackageSenderBuffor;};
+    std::optional<Package> get_sending_buffer();
     ReceiverPreferences preferences_list_;
 
 private:
-    std::optional<Package> PackageSenderBuffor = std::nullopt;
-    //std::optional<Package> PackageSenderBuffor;
-
+    std::optional<Package> package_sender_buffor_ = std::nullopt;
 };
 
+//=====================================//
 
+//=========== Worker ===========//
 
 class Worker : public IPackageReceiver, public PackageSender{
 public:
@@ -118,26 +114,24 @@ private:
     ReceiverType rec_tp = ReceiverType::Worker;
 };
 
-
+//==============================//
 class Storehouse : public IPackageReceiver {
 public:
     Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d) : id_(id), d_(std::move(d)) {}
 
-    ReceiverType get_receiver_type() const override { return rec_tp; }
+    // ReceiverType get_receiver_type() const override { return rec_tp; } // TODO in FACTORY
     ElementID get_id() const override { return id_; }
-    void receive_package(Package &&prod) override;
+    void receive_package(Package && package) override;
 
-    pacReceiverIt begin() override { return d_->begin(); };
-    const pacReceiverIt cbegin() override { return d_->cbegin(); };
-    pacReceiverIt end() override { return d_->end(); };
-    const pacReceiverIt cend() override { return d_->cend(); };
-
-    ~Storehouse() = default;
+//    pacReceiverIt begin() override { return d_->begin(); };
+//    const pacReceiverIt cbegin() override { return d_->cbegin(); };
+//    pacReceiverIt end() override { return d_->end(); };
+//    const pacReceiverIt cend() override { return d_->cend(); };
 
 private:
     ElementID id_;
     std::unique_ptr<IPackageStockpile> d_;
-    ReceiverType rec_tp = ReceiverType::Storehouse;
+    // ReceiverType rec_tp = ReceiverType::Storehouse; // TODO in FACTORY
 
 };
 
