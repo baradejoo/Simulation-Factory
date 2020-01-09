@@ -13,11 +13,14 @@
 #include "helpers.hpp"
 #include "config.hpp"
 
+//============ ReceiverType ===========//
 
 enum class ReceiverType{
     Ramp, Worker, Storehouse
 };
 
+//=====================================//
+//========== IPackageReceiver =========//
 
 class IPackageReceiver{
 public:
@@ -34,6 +37,9 @@ public:
 
     virtual ~IPackageReceiver() {};
 };
+
+//=====================================//
+//======== ReceiverPreferences ========//
 
 class ReceiverPreferences {
 public:
@@ -61,6 +67,7 @@ private:
     ProbabilityGenerator probability_generator_;
 };
 
+//=====================================//
 //=========== PackageSender ===========//
 
 class PackageSender {
@@ -105,6 +112,7 @@ private:
     //ReceiverType rec_tp = ReceiverType::Worker; // TODO in FACTORY
 
 //=====================================//
+//============= Storehouse ============//
 
 class Storehouse : public IPackageReceiver {
 public:
@@ -126,25 +134,23 @@ private:
 
 };
 
+//=====================================//
+//================ Ramp ===============//
 
 class Ramp : public PackageSender{
 public:
-    Ramp(ElementID id, TimeOffset di, ReceiverPreferences preferences_list)
-            :PackageSender(preferences_list), id_(id), di_(di){}
+    Ramp(ElementID id, TimeOffset di) : id_(id), di_(di) {}
 
-            //ReceiverPreferences preferences_list_;
     void deliver_goods(Time t);
-    TimeOffset get_delivery_interval() const { return di_; }
+    TimeOffset get_delivery_interval() { return di_; }
     ElementID  get_id() const { return id_; }
-
-    //~Ramp() = default;
 
 private:
     ElementID id_;
     TimeOffset di_;
 };
 
+//=====================================//
 
 #endif //FABRYKA_NODES_HPP
 
-// Robert Bytnar, 297074
