@@ -9,28 +9,15 @@
 
 
 
-void Ramp::deliver_goods(Time t)
+//============= Storehouse - Function definitions =============//
+
+void Storehouse::receive_package(Package&& package)
 {
-    if(t % di_ == 0)
-    {
-        Package package;
-        push_package(std::move(package));
-        //send_package();
-    }
+    d_->push(std::move(package));
 }
 
-void Worker::receive_package(Package&& prod) {
-    q_->push(std::move(prod));
-}
-
-void Storehouse::receive_package(Package&& pck)
-{
-    d_->push(std::move(pck));
-
-}
-
-
-//=========== PackageSender - Function definitions ===========//
+//=============================================================//
+//=========== PackageSender - Function definitions ============//
 
 void PackageSender::send_package(){
     if(package_sender_buffor_){
@@ -74,11 +61,17 @@ void Worker::receive_package(Package&& package){
     q_ -> push(std::move(package));
 }
 
+//=============================================================//
+//================ Ramp - Function definitions ================//
 
+void Ramp::deliver_goods(Time t){
+    if(t % di_ == 1){
+        Package package;
+        push_package(std::move(package));
+    }
+}
 
-
-
-
+//=============================================================//
 
 
 
