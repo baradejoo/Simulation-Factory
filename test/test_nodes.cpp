@@ -1,209 +1,168 @@
-//
-// Created by Bartek on 2020-01-03.
-//
-
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "package.hpp"
+
 #include "nodes.hpp"
+#include "package.hpp"
 #include "storage_types.hpp"
+#include "types.hpp"
+
+#include "nodes_mocks.hpp"
+#include "global_functions_mock.hpp"
+
+#include <iostream>
+
+using ::std::cout;
+using ::std::endl;
+
+// -----------------
+
+TEST(WorkerTest, HasBuffer) {
+    // Test scenariusza opisanego na stronie:
+    // http://home.agh.edu.pl/~mdig/dokuwiki/doku.php?id=teaching:programming:soft-dev:topics:net-simulation:part_nodes#bufor_aktualnie_przetwarzanego_polproduktu
+
+    Worker w(1, 2, std::make_unique<PackageQueue>(PackageQueueType::FIFO));
+    Time t = 1;
+
+    // FIXME: poprawić w docelowej wersji (dodać konstruktor z ID półproduktu)
+//    w.receive_package(Package(1));
+//    w.do_work(t);
+//    ++t;
+//    w.receive_package(Package(2));
+//    w.do_work(t);
+//    auto& buffer = w.get_sending_buffer();
+    //
+    w.receive_package(Package());
+    w.do_work(t);
+    ++t;
+    w.receive_package(Package());
+    w.do_work(t);
+    auto& buffer = w.get_sending_buffer();
 
 
-TEST(FabrykaStorehouseTest, CreationTest) {
-    // Uwaga: zakładam w tym teście że magazyn używa kolejki typu LIFO!
-
-    //stworzenie wskaźnika na interfejs kolejki
-    auto que_store_ptr = std::make_unique<PackageQueue>(PackageQueueType::LIFO);
-
-    //umieszczenie produktów w storehouse
-    que_store_ptr->push(Package());
-    que_store_ptr->push(Package());
-    que_store_ptr->push(Package());
-
-    // przypisanie StoreHouse wsk. na interfejs oraz identyfkatora
-    auto store = Storehouse(4,std::move(que_store_ptr));
-
-
-    ASSERT_EQ((*store.begin()).get_id(), 1);
-    ASSERT_EQ((*store.end()).get_id(), 3);
-
+    ASSERT_TRUE(buffer.has_value());
+    EXPECT_EQ(buffer.value().get_id(), 1);
 }
 
-//TEST(PackageSenderTest, EmptyBufferTest) { //wysyłanie półproduktu: czy po wysłaniu bufor jest pusty?
-//    PackageQueue q1(PackageQueueType::FIFO);
-//    PackageQueue q2(PackageQueueType::LIFO);
-//    PackageQueue q3(PackageQueueType::FIFO);
-//    PackageQueue q4(PackageQueueType::LIFO);
-//    std::unique_ptr<IPackageQueue> ptr1 = std::make_unique<PackageQueue>(q1);
-//    std::unique_ptr<IPackageQueue> ptr2 = std::make_unique<PackageQueue>(q2);
-//    std::unique_ptr<IPackageStockpile> ptr3 = std::make_unique<PackageQueue>(q3);
-//    std::unique_ptr<IPackageStockpile> ptr4 = std::make_unique<PackageQueue>(q4);
-//    Storehouse s1(1, std::move(ptr3));
-//    Storehouse s2(2, std::move(ptr4));
-//    Ramp r1(1, 1);
-//    Ramp r2(2, 2);
-//    Worker w1(1, 1, std::move(ptr1));
-//    Worker w2(2, 2, std::move(ptr2));
+// -----------------
+
+TEST(RampTest, IsDeliveryOnTime) {
+
+    Ramp r(1, 2);
+    // FIXME: poprawić w docelowej wersji (konstruktor powinien posiadać argument domyślny)
+//    auto recv = std::make_unique<Storehouse>(1);
+    auto recv = std::make_unique<Storehouse>(1, std::make_unique<PackageQueue>(PackageQueueType::LIFO));
+
+    r.receiver_preferences_.add_receiver(recv.get());
+
+    r.deliver_goods(1);
+    ASSERT_TRUE(r.get_sending_buffer().has_value());
+    r.send_package();
+
+    r.deliver_goods(2);
+    ASSERT_FALSE(r.get_sending_buffer().has_value());
+
+    r.deliver_goods(3);
+    ASSERT_TRUE(r.get_sending_buffer().has_value());
+}
+
+// -----------------
+
+TEST(ReceiverPreferencesTest, AddReceiversRescalesProbability) {
+    // Upewnij się, że dodanie odbiorcy spowoduje przeskalowanie prawdopodobieństw.
+    ReceiverPreferences rp;
+
+    MockReceiver r1;
+    rp.add_receiver(&r1);
+    ASSERT_NE(rp.get_preferences().find(&r1), rp.get_preferences().end());
+    EXPECT_EQ(rp.get_preferences().at(&r1), 1.0);
+
+    MockReceiver r2;
+    rp.add_receiver(&r2);
+    EXPECT_EQ(rp.get_preferences().at(&r1), 0.5);
+    ASSERT_NE(rp.get_preferences().find(&r2), rp.get_preferences().end());
+    EXPECT_EQ(rp.get_preferences().at(&r2), 0.5);
+}
+
+TEST(ReceiverPreferencesTest, RemoveReceiversRescalesProbability) {
+    // Upewnij się, że usunięcie odbiorcy spowoduje przeskalowanie pozostałych prawdopodobieństw.
+    ReceiverPreferences rp;
+
+    MockReceiver r1, r2;
+    rp.add_receiver(&r1);
+    rp.add_receiver(&r2);
+
+    rp.remove_receiver(&r2);
+    ASSERT_EQ(rp.get_preferences().find(&r2), rp.get_preferences().end());
+    EXPECT_EQ(rp.get_preferences().at(&r1), 1.0);
+}
+
+// Przydatny alias, żeby zamiast pisać `::testing::Return(...)` móc pisać
+// samo `Return(...)`.
+using ::testing::Return;
+
+
+// FIXME: odkomentować po wyjaśnieniu sytuacji z domyślnym generatorem prawdopodobieństwa
+//TEST_F(ReceiverPreferencesChoosingTest, ChooseReceiver) {
+//    // Upewnij się, że odbiorcy wybierani są z właściwym prawdopodobieństwem.
 //
-//    r1.preferences_list_.add_receiver(&w1);
+//    EXPECT_CALL(global_functions_mock, generate_canonical()).WillOnce(Return(0.3)).WillOnce(Return(0.7));
 //
-//    r1.deliver_goods(0);
-//    r1.send_package();
+//    ReceiverPreferences rp;
 //
-//    EXPECT_EQ(std::nullopt, r1.get_sending_buffer());
-//}
+//    MockReceiver r1, r2;
+//    rp.add_receiver(&r1);
+//    rp.add_receiver(&r2);
 //
-//TEST(RampTest, DeliveryTest) { //dostawa: czy dostawa odbywa się we właściwej turze? czy półprodukt trafia od razu do bufora?
-//    PackageQueue q1(PackageQueueType::FIFO);
-//    PackageQueue q2(PackageQueueType::LIFO);
-//    PackageQueue q3(PackageQueueType::FIFO);
-//    PackageQueue q4(PackageQueueType::LIFO);
-//    std::unique_ptr<IPackageQueue> ptr1 = std::make_unique<PackageQueue>(q1);
-//    std::unique_ptr<IPackageQueue> ptr2 = std::make_unique<PackageQueue>(q2);
-//    std::unique_ptr<IPackageStockpile> ptr3 = std::make_unique<PackageQueue>(q3);
-//    std::unique_ptr<IPackageStockpile> ptr4 = std::make_unique<PackageQueue>(q4);
-//    Storehouse s1(1, std::move(ptr3));
-//    Storehouse s2(2, std::move(ptr4));
-//    Ramp r1(1, 1);
-//    Ramp r2(2, 2);
-//    Worker w1(1, 1, std::move(ptr1));
-//    Worker w2(2, 2, std::move(ptr2));
-//
-//    r2.preferences_list_.add_receiver(&w1);
-//    r2.deliver_goods(0);
-//    r2.send_package();
-//    r2.deliver_goods(1);
-//    r2.send_package();
-//    r2.deliver_goods(2);
-//
-//    EXPECT_EQ(1, r2.get_sending_buffer().has_value());
-//}
-//
-//TEST(RampTest, NotDeliveryTest) { //dostawa: czy dostawa odbywa się we właściwej turze? czy półprodukt trafia od razu do bufora?
-//    PackageQueue q1(PackageQueueType::FIFO);
-//    PackageQueue q2(PackageQueueType::LIFO);
-//    PackageQueue q3(PackageQueueType::FIFO);
-//    PackageQueue q4(PackageQueueType::LIFO);
-//    std::unique_ptr<IPackageQueue> ptr1 = std::make_unique<PackageQueue>(q1);
-//    std::unique_ptr<IPackageQueue> ptr2 = std::make_unique<PackageQueue>(q2);
-//    std::unique_ptr<IPackageStockpile> ptr3 = std::make_unique<PackageQueue>(q3);
-//    std::unique_ptr<IPackageStockpile> ptr4 = std::make_unique<PackageQueue>(q4);
-//    Storehouse s1(1, std::move(ptr3));
-//    Storehouse s2(2, std::move(ptr4));
-//    Ramp r1(1, 1);
-//    Ramp r2(2, 2);
-//    Worker w1(1, 1, std::move(ptr1));
-//    Worker w2(2, 2, std::move(ptr2));
-//
-//    r2.preferences_list_.add_receiver(&w1);
-//    r2.deliver_goods(0);
-//    r2.send_package();
-//    r2.deliver_goods(1);
-//
-//    EXPECT_EQ(0, r2.get_sending_buffer().has_value());
-//}
-//
-//TEST(StorehouseTest, CorrectReceivingTest) {
-//    PackageQueue q(PackageQueueType::FIFO);
-//    std::unique_ptr<IPackageStockpile> ptr = std::make_unique<PackageQueue>(q);
-//    Storehouse s(1, std::move(ptr));
-//    Ramp r(1,2);
-//    r.preferences_list_.add_receiver(&s);
-//    r.deliver_goods(0);
-//    r.send_package();
-//    r.deliver_goods(1);
-//    r.send_package();
-//    r.deliver_goods(2);
-//    r.send_package();
-//    EXPECT_EQ(2, s.cend()->get_id());
-//}
-//
-//TEST(ReceiverPreferencesTest, CorectReceiver) {
-//    PackageQueue q1(PackageQueueType::FIFO);
-//    PackageQueue q2(PackageQueueType::LIFO);
-//    PackageQueue q3(PackageQueueType::FIFO);
-//    PackageQueue q4(PackageQueueType::LIFO);
-//    std::unique_ptr<IPackageQueue> ptr1 = std::make_unique<PackageQueue>(q1);
-//    std::unique_ptr<IPackageQueue> ptr2 = std::make_unique<PackageQueue>(q2);
-//    std::unique_ptr<IPackageStockpile> ptr3 = std::make_unique<PackageQueue>(q3);
-//    std::unique_ptr<IPackageStockpile> ptr4 = std::make_unique<PackageQueue>(q4);
-//    Storehouse s1(1, std::move(ptr3));
-//    Storehouse s2(2, std::move(ptr4));
-//    Ramp r1(1, 1);
-//    Ramp r2(2, 2);
-//    Worker w1(1, 1, std::move(ptr1));
-//    Worker w2(2, 2, std::move(ptr2));
-//
-//    std::function<double(void)> rng = random_generator();// funckja losujaca;
-//    ReceiverPreferences pref(rng);
-//
-//    IPackageReceiver* rec;
-//
-//    rec = &w1;
-//
-//    pref.add_receiver(&w1);
-//    pref.add_receiver(&w2);
-//    pref.add_receiver(&s1);
-//    // test logic
-//
-//    EXPECT_EQ(rec, pref.choose_receiver());
+//    if (rp.begin()->first == &r1) {
+//        EXPECT_EQ(rp.choose_receiver(), &r1);
+//        EXPECT_EQ(rp.choose_receiver(), &r2);
+//    } else {
+//        EXPECT_EQ(rp.choose_receiver(), &r2);
+//        EXPECT_EQ(rp.choose_receiver(), &r1);
+//    }
 //}
 
-//TEST(ReceiverPreferences, ProbabilityScalingTest) {
-//    std::function<double(void)> rng = your_num;
-//    ReceiverPreferences pref(rng);
-//    IPackageReceiver* r1;
-//    IPackageReceiver* r2;
-//    pref.add_receiver(r1);
-//    pref.add_receiver(r2);
-//    EXPECT_EQ(0.5, pref.get_probability(r1));
-//}
+// -----------------
 
-//TEST(WorkerBuffer, PackageReceivedInBuffer) {
-//    PackageQueue q(PackageQueueType::FIFO);
-//    std::unique_ptr<IPackageQueue> ptr1 = std::make_unique<PackageQueue>(q);
-//    std::unique_ptr<IPackageStockpile> ptr2 = std::make_unique<PackageQueue>(q);
-//    Worker w(1, 2,std::move(ptr1));
-//    Ramp r(1,2);
-//    Storehouse s(1, std::move(ptr2));
-//    r.preferences_list_.add_receiver(&w);
-//    w.preferences_list_.add_receiver(&s);
-//    r.deliver_goods(0);
-//    r.send_package();
-//    w.do_work(0);
-//    w.send_package();
-//    r.deliver_goods(1);
-//    r.send_package();
-//    w.do_work(1);
-//    w.send_package();
-//    r.deliver_goods(2);
-//    r.send_package();
-//    w.do_work(2);
-//    w.send_package();
-//    EXPECT_EQ(1, w.get_ID_from_buffer());
-//}
-//
-//TEST(WorkerTime, CorrectTimeProcessingPackage) { //wykonywanie pracy: czy robotnik przetwarza półprodukt odpowiednią liczbę tur? czy przekazuje dalej odpowiedni półprodukt?
-//    PackageQueue q1(PackageQueueType::FIFO);
-//    PackageQueue q2(PackageQueueType::FIFO);
-//    std::unique_ptr<IPackageQueue> ptr1 = std::make_unique<PackageQueue>(q1);
-//    std::unique_ptr<IPackageStockpile> ptr2 = std::make_unique<PackageQueue>(q2);
-//    Worker w(1, 2,std::move(ptr1));
-//    Ramp r(1,2);
-//    Storehouse s(1, std::move(ptr2));
-//    r.preferences_list_.add_receiver(&w);
-//    w.preferences_list_.add_receiver(&s);
-//    r.deliver_goods(0);
-//    r.send_package();
-//    w.do_work(0);
-//    w.send_package();
-//    r.deliver_goods(1);
-//    r.send_package();
-//    w.do_work(1);
-//    w.send_package();
-//    r.deliver_goods(2);
-//    r.send_package();
-//    w.do_work(2);
-//    w.send_package();
-//
-//    EXPECT_EQ(1, s.cbegin()->get_id());
-//}
+using ::testing::Return;
+using ::testing::_;
+
+// Ponieważ `IPackageStockpile::const_iterator` to iterator na (niestandardowy)
+// typ Package, który nie przeciąża operatora <<, Google Mock nie ma pojęcia
+// w jaki sposób wypisać iterator w postaci tekstowej (w przypadku nie
+// spełnienia asercji - w ramach komunikatu diagnostycznego).
+// Aby rozwiązać ten problem, możemy ręcznie zdefiniować funkcję wywoływaną
+// w sytuacji, gdy zachodzi potrzeba wypisania obiektu niestandardowego typu
+// - w tym przypadku `IPackageStockpile::const_iterator`.
+// zob. https://github.com/google/googlemock/blob/master/googlemock/docs/v1_5/CookBook.md#teaching-google-mock-how-to-print-your-values
+void PrintTo(const IPackageStockpile::const_iterator& it, ::std::ostream* os) {
+    *os << it->get_id();
+}
+
+class PackageSenderFixture : public PackageSender {
+    // Nie sposób w teście wykorzystać prywetnej metody `PackageSender::push_package()`,
+    // dlatego do celów testowych stworzona została implementacja zawierająca
+    // metodę `push_package()` w sekcji publicznej.
+public:
+    void push_package(Package&& package) { PackageSender::push_package(std::move(package)); }
+};
+
+
+TEST(PackageSenderTest, SendPackage) {
+    MockReceiver mock_receiver;
+    // Oczekujemy, że metoda `receive_package()` obiektu `mock_receiver` zostanie
+    // wywołana dwukrotnie, z dowolnym argumentem (symbol `_`).
+    EXPECT_CALL(mock_receiver, receive_package(_)).Times(1);
+
+    PackageSenderFixture sender;
+    sender.receiver_preferences_.add_receiver(&mock_receiver);
+    // Zwróć uwagę, że poniższa instrukcja korzysta z semantyki referencji do r-wartości.
+    sender.push_package(Package());
+
+    sender.send_package();
+
+    EXPECT_FALSE(sender.get_sending_buffer());
+
+    // Upewnij się, że proces wysyłania zachodzi tylko wówczas, gdy w bufor jest pełny.
+    sender.send_package();
+}
