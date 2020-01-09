@@ -12,6 +12,7 @@
 #include "package.hpp"
 #include "storage_types.hpp"
 #include "helpers.hpp"
+#include "config.hpp"
 
 
 enum class ReceiverType{
@@ -160,3 +161,5 @@ private:
 
 
 #endif //FABRYKA_NODES_HPP
+
+// Robert Bytnar, 297074
