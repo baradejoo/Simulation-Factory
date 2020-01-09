@@ -58,7 +58,7 @@ public:
 
 private:
     preferences_t preferences_list_;
-    ProbabilityGenerator probability_generator;
+    ProbabilityGenerator probability_generator_;
 };
 
 //=========== PackageSender ===========//
@@ -77,24 +77,17 @@ private:
 };
 
 //=====================================//
-
-//=========== Worker ===========//
+//============== Worker ===============//
 
 class Worker : public IPackageReceiver, public PackageSender{
 public:
-    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q, ReceiverPreferences preferences_list);
-
-
-    //Worker(ReceiverPreferences preferences_list_) : Worker(ReceiverPreferences preferences_list_) {};
-
-    //Worker(const Worker&) = delete;
-    //Worker& operator=(Worker&) = delete;
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> q);
 
     void do_work(Time t);
-    TimeOffset get_processing_duration() const {return pd_; };
+    TimeOffset get_processing_duration() {return pd_; };
     Time get_package_processing_start_time() const { return t_; }
 
-    ReceiverType get_receiver_type() const override { return rec_tp; }
+    //ReceiverType get_receiver_type() const override { return rec_tp; } // TODO in FACTORY
     ElementID  get_id() const override { return id_; }
     void receive_package(Package&& package) override;
 
@@ -103,18 +96,16 @@ public:
     pacReceiverIt end() override { return q_->end(); }
     const pacReceiverIt cend() override { return q_->cend(); }
 
-    ~Worker() = default;
-
 private:
-    ElementID id_{};
-    TimeOffset pd_{};
+    ElementID id_;
+    TimeOffset pd_;
     Time t_ = 0;
-    std::unique_ptr<IPackageQueue> q_;
-    std::optional<Package> WorkerBuffer = std::nullopt;
-    ReceiverType rec_tp = ReceiverType::Worker;
-};
+    std::unique_ptr<PackageQueue> q_;
+    std::optional<Package> worker_buffer_ = std::nullopt;
+    //ReceiverType rec_tp = ReceiverType::Worker; // TODO in FACTORY
 
-//==============================//
+//=====================================//
+
 class Storehouse : public IPackageReceiver {
 public:
     Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d) : id_(id), d_(std::move(d)) {}
