@@ -1,4 +1,4 @@
-//
+// Kamil Baradziej, 302819
 // aliasy
 //
 
