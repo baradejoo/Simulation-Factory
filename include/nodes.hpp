@@ -9,11 +9,11 @@
 #include "storage_types.hpp"
 #include "helpers.hpp"
 
-////============ ReceiverType ===========//
-//
-//enum class ReceiverType{
-//    Ramp, Worker, Storehouse
-//};
+//============ ReceiverType ===========//
+
+enum class ReceiverType{
+    Ramp, Worker, Storehouse
+};
 
 //=====================================//
 //========== IPackageReceiver =========//
@@ -63,55 +63,56 @@ private:
 //=====================================//
 //=========== PackageSender ===========//
 
-//class PackageSender {
-//protected:
-//    void push_package(Package&& package) { package_sender_buffor_=std::move(package); }
-//
-//public:
-//    void send_package();
-//    std::optional<Package> get_sending_buffer();
-//    ReceiverPreferences preferences_list_;
-//
-//private:
-//    std::optional<Package> package_sender_buffor_ = std::nullopt;
-//};
+class PackageSender {
+protected:
+    void push_package(Package&& package) { package_sender_buffor_=std::move(package); }
 
-////=====================================//
-////============== Worker ===============//
-//
-//class Worker : public IPackageReceiver, public PackageSender {
-//public:
-//    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> q);
-//
-//    void do_work(Time t);
-//
-//    TimeOffset get_processing_duration() { return pd_; };
-//
-//    Time get_package_processing_start_time() const { return t_; }
-//
-//    //ReceiverType get_receiver_type() const override { return rec_tp; } // TODO in FACTORY
-//    ElementID get_id() const override { return id_; }
-//
-//    void receive_package(Package&& package) override;
-//
-//    pacReceiverIt begin() override { return q_->begin(); }
-//
-//    const pacReceiverIt cbegin() override { return q_->cbegin(); }
-//
-//    pacReceiverIt end() override { return q_->end(); }
-//
-//    const pacReceiverIt cend() override { return q_->cend(); }
-//
-//private:
-//    ElementID id_;
-//    TimeOffset pd_;
-//    Time t_ = 0;
-//    std::unique_ptr<PackageQueue> q_;
-//    std::optional<Package> worker_buffer_ = std::nullopt;
-//    //ReceiverType rec_tp = ReceiverType::Worker; // TODO in FACTORY
-//};
-////=====================================//
-////============= Storehouse ============//
+public:
+    void send_package();
+    std::optional<Package> get_sending_buffer();
+    ReceiverPreferences preferences_list_;
+
+private:
+    std::optional<Package> package_sender_buffor_ = std::nullopt;
+};
+
+//=====================================//
+//============== Worker ===============//
+
+class Worker : public IPackageReceiver, public PackageSender {
+public:
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> q);
+
+    void do_work(Time t);
+
+    TimeOffset get_processing_duration() { return pd_; };
+
+    Time get_package_processing_start_time() const { return t_; }
+
+    //ReceiverType get_receiver_type() const override { return rec_tp; } // TODO in FACTORY
+    ElementID get_id() const override { return id_; }
+
+    void receive_package(Package&& package) override;
+
+    pacReceiverIt begin() override { return q_->begin(); }
+
+    const pacReceiverIt cbegin() override { return q_->cbegin(); }
+
+    pacReceiverIt end() override { return q_->end(); }
+
+    const pacReceiverIt cend() override { return q_->cend(); }
+
+private:
+    ElementID id_;
+    TimeOffset pd_;
+    Time t_ = 0;
+    std::unique_ptr<PackageQueue> q_;
+    std::optional<Package> worker_buffer_ = std::nullopt;
+    //ReceiverType rec_tp = ReceiverType::Worker; // TODO in FACTORY
+};
+
+//=====================================//
+//============= Storehouse ============//
 
 class Storehouse : public IPackageReceiver {
 public:
@@ -135,21 +136,21 @@ private:
 
 //=====================================//
 //================ Ramp ===============//
-//
-//class Ramp : public PackageSender{
-//public:
-//    Ramp(ElementID id, TimeOffset di) : id_(id), di_(di) {}
-//
-//    void deliver_goods(Time t);
-//    TimeOffset get_delivery_interval() { return di_; }
-//    ElementID  get_id() const { return id_; }
-//
-//private:
-//    ElementID id_;
-//    TimeOffset di_;
-//};
-//
-////=====================================//
+
+class Ramp : public PackageSender{
+public:
+    Ramp(ElementID id, TimeOffset di) : id_(id), di_(di) {}
+
+    void deliver_goods(Time t);
+    TimeOffset get_delivery_interval() { return di_; }
+    ElementID  get_id() const { return id_; }
+
+private:
+    ElementID id_;
+    TimeOffset di_;
+};
+
+//=====================================//
 
 #endif //NET_SIMULATION_NODES_HPP
 
