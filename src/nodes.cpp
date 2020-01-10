@@ -77,56 +77,55 @@ void Storehouse::receive_package(Package&& package)
 //=============================================================//
 //======= ReceiverPreferences- Function definitions============//
 
-
-
+ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator generator_function = probability_generator){
+    probability_generator_ = generator_function;
+}
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* r) {
     double sum_temp = 0.0;
+    double pref_temp = 1;
+    preferences_list_.[r] = pref_temp;
 
-    preferences_list_.emplace(std::make_pair(r, 1.0));
-
-    for(const auto& item: preferences_list_)
-    {
+    for(auto& item : preferences_list_){
+        preferences_list_[item.first] = 1.0/preferences_list_.size();
         sum_temp+= item.second;
     }
 
-    for(auto& item: preferences_list_)
-    {
-        item.second /= sum_temp;
+    if(sum_temp != 1.0){
+        preferences_list_[r] = preferences_list_[r] + 1.0 - sum_temp;
     }
-
 }
 
-void ReceiverPreferences::remove_receiver(IPackageReceiver* r) {
-    double sum_temp = 0.0;
-
-    preferences_list_.erase(r);
-
-    for(const auto& item: preferences_list_)
-    {
-        sum_temp+= item.second;
-    }
-
-    for(auto& item: preferences_list_)
-    {
-        item.second /= sum_temp;
-    }
-
-}
-
-
-IPackageReceiver* ReceiverPreferences::choose_receiver()
-{
-    double number = probability_generator();
-    double sum = 0;
-    for (const auto &item: preferences_list_)
-    {
-        sum += item.second;
-        if(number <= sum)
-            return item.first;
-    }
-    return preferences_list_.end()->first;
-}
+//void ReceiverPreferences::remove_receiver(IPackageReceiver* r) {
+//    double sum_temp = 0.0;
+//
+//    preferences_list_.erase(r);
+//
+//    for(const auto& item: preferences_list_)
+//    {
+//        sum_temp+= item.second;
+//    }
+//
+//    for(auto& item: preferences_list_)
+//    {
+//        item.second /= sum_temp;
+//    }
+//
+//}
+//
+//
+//IPackageReceiver* ReceiverPreferences::choose_receiver()
+//{
+//    double number = probability_generator();
+//    double sum = 0;
+//    for (const auto &item: preferences_list_)
+//    {
+//        sum += item.second;
+//        if(number <= sum)
+//            return item.first;
+//    }
+//    return preferences_list_.end()->first;
+//}
 
 
 

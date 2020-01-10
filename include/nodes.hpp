@@ -1,6 +1,3 @@
-//
-// Created by Kamil Baradziej on 28/12/2019.
-//
 
 #ifndef NET_SIMULATION_NODES_HPP
 #define NET_SIMULATION_NODES_HPP
@@ -47,14 +44,12 @@ public:
     using const_iterator = preferences_t::const_iterator;
     using iterator = preferences_t::iterator;
 
-    ReceiverPreferences(ProbabilityGenerator probability_generator) { ProbabilityGenerator random_generator = probability_generator;};
-
-    ReceiverPreferences( preferences_t preferences_list): preferences_list_(preferences_list) {}
+    ReceiverPreferences(ProbabilityGenerator generator_function = probability_generator);
 
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
-
     IPackageReceiver* choose_receiver();
+
     iterator begin()  { return preferences_list_.begin(); };
     const const_iterator cbegin()  { return preferences_list_.cbegin(); };
     iterator end()  { return preferences_list_.end(); };
@@ -63,7 +58,7 @@ public:
 
 private:
     preferences_t preferences_list_;
-    ProbabilityGenerator probability_generator;
+    ProbabilityGenerator probability_generator_;
 };
 
 //=====================================//
