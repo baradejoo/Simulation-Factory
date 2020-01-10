@@ -43,7 +43,7 @@ public:
     using const_iterator = preferences_t::const_iterator;
     using iterator = preferences_t::iterator;
 
-    ReceiverPreferences(ProbabilityGenerator generator_function = probability_generator) : probability_generator_(generator_function){}
+    ReceiverPreferences(ProbabilityGenerator generator_function = default_probability_generator) : probability_generator_(generator_function){}
 
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
