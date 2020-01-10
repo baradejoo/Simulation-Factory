@@ -88,36 +88,33 @@ void ReceiverPreferences::add_receiver(IPackageReceiver* r) {
     }
 }
 
-//void ReceiverPreferences::remove_receiver(IPackageReceiver* r) {
-//    double sum_temp = 0.0;
-//
-//    preferences_list_.erase(r);
-//
-//    for(const auto& item: preferences_list_)
-//    {
-//        sum_temp+= item.second;
-//    }
-//
-//    for(auto& item: preferences_list_)
-//    {
-//        item.second /= sum_temp;
-//    }
-//
-//}
-//
-//
-//IPackageReceiver* ReceiverPreferences::choose_receiver()
-//{
-//    double number = probability_generator();
-//    double sum = 0;
-//    for (const auto &item: preferences_list_)
-//    {
-//        sum += item.second;
-//        if(number <= sum)
-//            return item.first;
-//    }
-//    return preferences_list_.end()->first;
-//}
+void ReceiverPreferences::remove_receiver(IPackageReceiver* r){
+    double sum_temp = 0.0;
+    preferences_list_.erase(r);
+    IPackageReceiver* temp = r;
+
+    for(const auto& item: preferences_list_){
+        preferences_list_[item.first] = 1.0/preferences_list_.size();
+        sum_temp+= item.second;
+        temp = item.first;
+    }
+
+    if(sum_temp!=1.0){
+        preferences_list_[temp] = preferences_list_[temp] + 1.0 - sum_temp;
+    }
+}
+
+IPackageReceiver* ReceiverPreferences::choose_receiver(){
+    double number = probability_generator_();
+    double sum = 0.0;
+    for (const auto &item: preferences_list_)
+    {
+        sum += item.second;
+        if(number <= sum)
+            return item.first;
+    }
+    return preferences_list_.end()->first;
+}
 
 
 
