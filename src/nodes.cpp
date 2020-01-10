@@ -107,8 +107,7 @@ void ReceiverPreferences::remove_receiver(IPackageReceiver* r){
 IPackageReceiver* ReceiverPreferences::choose_receiver(){
     double number = probability_generator_();
     double sum = 0.0;
-    for (const auto &item: preferences_list_)
-    {
+    for (const auto &item: preferences_list_){
         sum += item.second;
         if(number <= sum)
             return item.first;
