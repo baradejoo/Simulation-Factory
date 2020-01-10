@@ -1,13 +1,5 @@
 
-
-// Created by Kamil Baradziej on 28/12/2019.
-
-
-#include <nodes.hpp>
-
 #include "nodes.hpp"
-
-
 
 //============= Storehouse - Function definitions =============//
 
@@ -77,14 +69,14 @@ void Storehouse::receive_package(Package&& package)
 //=============================================================//
 //======= ReceiverPreferences- Function definitions============//
 
-ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator generator_function = probability_generator){
-    probability_generator_ = generator_function;
-}
+//ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator generator_function = probability_generator){
+//    probability_generator_ = generator_function;
+//}
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* r) {
     double sum_temp = 0.0;
     double pref_temp = 1;
-    preferences_list_.[r] = pref_temp;
+    preferences_list_[r] = pref_temp;
 
     for(auto& item : preferences_list_){
         preferences_list_[item.first] = 1.0/preferences_list_.size();
