@@ -8,6 +8,7 @@
 #include <functional>
 #include "storage_types.hpp"
 #include "helpers.hpp"
+#include "config.hpp"
 
 //============ ReceiverType ===========//
 
@@ -23,7 +24,7 @@ public:
     using pacReceiverIt = std::list<Package>::const_iterator;
 
     virtual void receive_package(Package&& package) = 0;
-//    virtual ReceiverType get_receiver_type() const = 0; // TODO in FACTORY
+    virtual ReceiverType get_receiver_type() const = 0; // TODO in FACTORY
     virtual ElementID get_id() const = 0;
 
     virtual pacReceiverIt begin() = 0;
@@ -48,6 +49,8 @@ public:
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
     IPackageReceiver* choose_receiver();
+    const preferences_t& get_preferences() const {return preferences_list_;};
+
 
     iterator begin()  { return preferences_list_.begin(); };
     const const_iterator cbegin()  { return preferences_list_.cbegin(); };
@@ -71,6 +74,7 @@ public:
     void send_package();
     std::optional<Package> get_sending_buffer();
     ReceiverPreferences preferences_list_;
+    //PackageSender(PackageSender&&)=default;
 
 private:
     std::optional<Package> package_sender_buffor_ = std::nullopt;
