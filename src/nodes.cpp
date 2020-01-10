@@ -86,6 +86,20 @@ void ReceiverPreferences::add_receiver(IPackageReceiver* r) {
     if(sum_temp != 1.0){
         preferences_list_[r] = preferences_list_[r] + 1.0 - sum_temp;
     }
+
+//    preferences_list_.emplace(std::make_pair(r,1.0));
+//
+//    double sum = 0;
+//    for(const auto& item : preferences_list_)
+//    {
+//        sum+= item.second;
+//    }
+//
+//    for(auto& item : preferences_list_)
+//    {
+//        item.second /= sum;
+//    }
+
 }
 
 void ReceiverPreferences::remove_receiver(IPackageReceiver* r){
@@ -102,6 +116,20 @@ void ReceiverPreferences::remove_receiver(IPackageReceiver* r){
     if(sum_temp!=1.0){
         preferences_list_[temp] = preferences_list_[temp] + 1.0 - sum_temp;
     }
+
+//    preferences_list_.erase(r);
+//
+//    double sum = 0;
+//    for(const auto& item : preferences_list_)
+//    {
+//        sum+= item.second;
+//    }
+//
+//    for(auto& item : preferences_list_)
+//    {
+//        item.second /= sum;
+//    }
+
 }
 
 IPackageReceiver* ReceiverPreferences::choose_receiver(){
