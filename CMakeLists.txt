@@ -17,7 +17,7 @@ set(SOURCE_FILES
 add_executable(Fabryka__debug ${SOURCE_FILES} fabryka.cpp #src/storage_types.cpp#)
         )
 
-target_compile_definitions(Fabryka__debug PUBLIC EXERCISE_ID=EXERCISE_ID_PACKAGES)
+target_compile_definitions(Fabryka__debug PUBLIC EXERCISE_ID=2)
 
 set(SOURCES_FILES_TESTS
         test/test_package.cpp

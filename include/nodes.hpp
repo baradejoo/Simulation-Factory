@@ -24,7 +24,7 @@ public:
     using pacReceiverIt = std::list<Package>::const_iterator;
 
     virtual void receive_package(Package&& package) = 0;
-    virtual ReceiverType get_receiver_type() const = 0; // TODO in FACTORY
+//    virtual ReceiverType get_receiver_type() const = 0; // TODO in FACTORY
     virtual ElementID get_id() const = 0;
 
     virtual pacReceiverIt begin() = 0;
@@ -51,6 +51,7 @@ public:
     IPackageReceiver* choose_receiver();
     const preferences_t& get_preferences() const {return preferences_list_;};
 
+    preferences_t& get_preferences()  {return preferences_list_;};
 
     iterator begin()  { return preferences_list_.begin(); };
     const const_iterator cbegin()  { return preferences_list_.cbegin(); };
@@ -126,10 +127,10 @@ public:
     ElementID get_id() const override { return id_; }
     void receive_package(Package && package) override;
 
-//    pacReceiverIt begin() override { return d_->begin(); };
-//    const pacReceiverIt cbegin() override { return d_->cbegin(); };
-//    pacReceiverIt end() override { return d_->end(); };
-//    const pacReceiverIt cend() override { return d_->cend(); };
+    pacReceiverIt begin() override { return d_->begin(); };
+    const pacReceiverIt cbegin() override { return d_->cbegin(); };
+    pacReceiverIt end() override { return d_->end(); };
+    const pacReceiverIt cend() override { return d_->cend(); };
 
 private:
     ElementID id_;
