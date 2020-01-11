@@ -133,8 +133,8 @@ IPackageReceiver* ReceiverPreferences::choose_receiver(){
     double number = probability_generator_();
     double sum = 0.0;
     preferences_t::reverse_iterator iter;
-    preferences_t::reverse_iterator rbegin_it = preferences_list_.rbegin()
-    preferences_t::reverse_iterator rend_it = preferences_list_.rend()
+    preferences_t::reverse_iterator rbegin_it = preferences_list_.rbegin();
+    preferences_t::reverse_iterator rend_it = preferences_list_.rend();
 
     IPackageReceiver* temp = rbegin_it->first;
     for(iter = rbegin_it; iter != rend_it; ++iter){

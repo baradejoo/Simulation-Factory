@@ -47,10 +47,10 @@ public:
 
     preferences_t& get_preferences()  {return preferences_list_;};
 
-    iterator begin()  { return preferences_list_.begin(); };
-    const const_iterator cbegin()  { return preferences_list_.cbegin(); };
-    iterator end()  { return preferences_list_.end(); };
-    const const_iterator cend()  { return preferences_list_.cend(); };
+//    iterator begin()  { return preferences_list_.begin(); };
+//    const const_iterator cbegin()  { return preferences_list_.cbegin(); };
+//    iterator end()  { return preferences_list_.end(); };
+//    const const_iterator cend()  { return preferences_list_.cend(); };
 
 
 private:
@@ -93,13 +93,13 @@ public:
 
     void receive_package(Package&& package) override;
 
-    pacReceiverIt begin() override { return q_->begin(); }
-
-    const pacReceiverIt cbegin() override { return q_->cbegin(); }
-
-    pacReceiverIt end() override { return q_->end(); }
-
-    const pacReceiverIt cend() override { return q_->cend(); }
+//    pacReceiverIt begin() override { return q_->begin(); }
+//
+//    const pacReceiverIt cbegin() override { return q_->cbegin(); }
+//
+//    pacReceiverIt end() override { return q_->end(); }
+//
+//    const pacReceiverIt cend() override { return q_->cend(); }
 
 private:
     ElementID id_;
@@ -121,10 +121,10 @@ public:
     ElementID get_id() const override { return id_; }
     void receive_package(Package && package) override;
 
-    pacReceiverIt begin() override { return d_->begin(); };
-    const pacReceiverIt cbegin() override { return d_->cbegin(); };
-    pacReceiverIt end() override { return d_->end(); };
-    const pacReceiverIt cend() override { return d_->cend(); };
+//    pacReceiverIt begin() override { return d_->begin(); };
+//    const pacReceiverIt cbegin() override { return d_->cbegin(); };
+//    pacReceiverIt end() override { return d_->end(); };
+//    const pacReceiverIt cend() override { return d_->cend(); };
 
 private:
     ElementID id_;
