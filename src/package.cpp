@@ -1,4 +1,4 @@
-// Kamil Baradziej, 302819
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)
 
 #include "package.hpp"
 #include <stdexcept>
@@ -73,3 +73,5 @@ Package::~Package() {
         erase_if_exists(assigned_ids_, id_);
     }
 }
+
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)

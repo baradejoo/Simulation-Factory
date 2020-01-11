@@ -1,4 +1,5 @@
-// Kamil Baradziej, 302819
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)
+
 #ifndef NET_SIMULATION_PACKAGE_HPP
 #define NET_SIMULATION_PACKAGE_HPP
 
@@ -53,3 +54,5 @@ private:
 };
 
 #endif //NET_SIMULATION_PACKAGE_HPP
+
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)

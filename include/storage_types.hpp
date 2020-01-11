@@ -1,4 +1,4 @@
-// Kamil Baradziej, 302819
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)
 
 #ifndef LAB10_STORAGE_TYPES_HPP
 #define LAB10_STORAGE_TYPES_HPP
@@ -60,3 +60,5 @@ private:
 };
 
 #endif //LAB10_STORAGE_TYPES_HPP
+
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)

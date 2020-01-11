@@ -1,4 +1,4 @@
-// Kamil Baradziej, 302819
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)
 
 #ifndef FABRYKA_HELPERS_HPP
 #define FABRYKA_HELPERS_HPP
@@ -13,3 +13,5 @@ extern double default_probability_generator();
 extern ProbabilityGenerator probability_generator;
 
 #endif //FABRYKA_HELPERS_HPP
+
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)

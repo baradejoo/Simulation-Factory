@@ -1,3 +1,5 @@
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)
+
 //=============== default_probability_generator - definition ================//
 
 #include "helpers.hpp"
@@ -11,3 +13,5 @@ double default_probability_generator(){
 }
 
 std::function<double()> probability_generator = default_probability_generator;
+
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)

@@ -1,3 +1,4 @@
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)
 
 #ifndef NET_SIMULATION_NODES_HPP
 #define NET_SIMULATION_NODES_HPP
@@ -11,19 +12,21 @@
 
 //============ ReceiverType ===========//
 
-enum class ReceiverType{
+enum class ReceiverType {
     Ramp, Worker, Storehouse
 };
 
 //=====================================//
 //========== IPackageReceiver =========//
 
-class IPackageReceiver{
+class IPackageReceiver {
 public:
     using pacReceiverIt = std::list<Package>::const_iterator;
 
-    virtual void receive_package(Package&& package) = 0;
+    virtual void receive_package(Package &&package) = 0;
+
 //    virtual ReceiverType get_receiver_type() const = 0; // TODO in FACTORY
+
     virtual ElementID get_id() const = 0;
 
     virtual ~IPackageReceiver() {};
@@ -34,18 +37,22 @@ public:
 
 class ReceiverPreferences {
 public:
-    using preferences_t = std::map<IPackageReceiver*, double>;
+    using preferences_t = std::map<IPackageReceiver *, double>;
     using const_iterator = preferences_t::const_iterator;
     using iterator = preferences_t::iterator;
 
-    ReceiverPreferences(ProbabilityGenerator probability_function = probability_generator) : probability_generator_(probability_function){}
+    ReceiverPreferences(ProbabilityGenerator probability_function = probability_generator) : probability_generator_(
+            probability_function) {}
 
-    void add_receiver(IPackageReceiver* r);
-    void remove_receiver(IPackageReceiver* r);
-    IPackageReceiver* choose_receiver();
-    const preferences_t& get_preferences() const {return preferences_list_;};
+    void add_receiver(IPackageReceiver *r);
 
-    preferences_t& get_preferences()  {return preferences_list_;};
+    void remove_receiver(IPackageReceiver *r);
+
+    IPackageReceiver *choose_receiver();
+
+    const preferences_t &get_preferences() const { return preferences_list_; };
+
+    preferences_t &get_preferences() { return preferences_list_; };
 
 //    iterator begin()  { return preferences_list_.begin(); };
 //    const const_iterator cbegin()  { return preferences_list_.cbegin(); };
@@ -63,11 +70,13 @@ private:
 
 class PackageSender {
 protected:
-    void push_package(Package&& package) { package_sender_buffor_=std::move(package); }
+    void push_package(Package &&package) { package_sender_buffor_ = std::move(package); }
 
 public:
     void send_package();
-    std::optional<Package> & get_sending_buffer();
+
+    std::optional<Package> &get_sending_buffer();
+
     ReceiverPreferences receiver_preferences_;
     //PackageSender(PackageSender&&)=default;
 
@@ -91,7 +100,7 @@ public:
     //ReceiverType get_receiver_type() const override { return rec_tp; } // TODO in FACTORY
     ElementID get_id() const override { return id_; }
 
-    void receive_package(Package&& package) override;
+    void receive_package(Package &&package) override;
 
 //    pacReceiverIt begin() override { return q_->begin(); }
 //
@@ -119,7 +128,8 @@ public:
 
     // ReceiverType get_receiver_type() const override { return rec_tp; } // TODO in FACTORY
     ElementID get_id() const override { return id_; }
-    void receive_package(Package && package) override;
+
+    void receive_package(Package &&package) override;
 
 //    pacReceiverIt begin() override { return d_->begin(); };
 //    const pacReceiverIt cbegin() override { return d_->cbegin(); };
@@ -136,13 +146,15 @@ private:
 //=====================================//
 //================ Ramp ===============//
 
-class Ramp : public PackageSender{
+class Ramp : public PackageSender {
 public:
     Ramp(ElementID id, TimeOffset di) : id_(id), di_(di) {}
 
     void deliver_goods(Time t);
+
     TimeOffset get_delivery_interval() { return di_; }
-    ElementID  get_id() const { return id_; }
+
+    ElementID get_id() const { return id_; }
 
 private:
     ElementID id_;
@@ -153,3 +165,4 @@ private:
 
 #endif //NET_SIMULATION_NODES_HPP
 
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)
