@@ -16,15 +16,15 @@ class const_iterator;
 
 class IPackageStockpile{
 public:
-    using containerIt = std::list<Package>::const_iterator;
+    using const_iterator = std::list<Package>::const_iterator;
 
     virtual void push(Package&& package) = 0;
     virtual bool empty() = 0;
     virtual size_type size() = 0;
-    virtual containerIt begin() = 0;
-    virtual const containerIt cbegin() = 0;
-    virtual containerIt end() = 0;
-    virtual const containerIt cend() = 0;
+    virtual const_iterator begin() = 0;
+    virtual const const_iterator cbegin() = 0;
+    virtual const_iterator end() = 0;
+    virtual const const_iterator cend() = 0;
 
     virtual ~IPackageStockpile() {}
 };
@@ -46,10 +46,10 @@ public:
     void push(Package&& package) override {queue.emplace_back(std::move(package));}
 
     size_type size() override { return queue.size(); }
-    containerIt begin() override { return queue.begin(); }
-    const containerIt cbegin() override { return queue.cbegin(); };
-    containerIt end() override { return queue.end(); };
-    const containerIt cend() override { return queue.cend(); }
+    const_iterator begin() override { return queue.begin(); }
+    const const_iterator cbegin() override { return queue.cbegin(); };
+    const_iterator end() override { return queue.end(); };
+    const const_iterator cend() override { return queue.cend(); }
 
     Package pop() override;
     PackageQueueType get_queue_type() override { return queue_type; }
