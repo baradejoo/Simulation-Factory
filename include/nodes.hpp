@@ -8,7 +8,6 @@
 #include <functional>
 #include "storage_types.hpp"
 #include "helpers.hpp"
-#include "config.hpp"
 
 //============ ReceiverType ===========//
 
@@ -44,7 +43,7 @@ public:
     using const_iterator = preferences_t::const_iterator;
     using iterator = preferences_t::iterator;
 
-    ReceiverPreferences(ProbabilityGenerator generator_function = probability_generator) : probability_generator_(generator_function){}
+    ReceiverPreferences(ProbabilityGenerator probability_function = probability_generator) : probability_generator_(probability_function){}
 
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
@@ -73,7 +72,7 @@ protected:
 public:
     void send_package();
     std::optional<Package> get_sending_buffer();
-    ReceiverPreferences preferences_list_;
+    ReceiverPreferences receiver_preferences_;
     //PackageSender(PackageSender&&)=default;
 
 private:

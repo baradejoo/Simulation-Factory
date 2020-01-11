@@ -32,7 +32,6 @@ add_executable(Fabryka__test ${SOURCE_FILES} ${SOURCES_FILES_TESTS} test/main_gt
 target_include_directories(Fabryka__test PUBLIC
         ../../googletest-master/googlemock/include
         ../../googletest-master/googletest/include
-        mocks
         )
 
 add_subdirectory(googletest-master)
