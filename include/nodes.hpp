@@ -67,7 +67,7 @@ protected:
 
 public:
     void send_package();
-    std::optional<Package> get_sending_buffer();
+    std::optional<Package> & get_sending_buffer();
     ReceiverPreferences receiver_preferences_;
     //PackageSender(PackageSender&&)=default;
 

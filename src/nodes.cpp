@@ -19,14 +19,8 @@ void PackageSender::send_package(){
     }
 }
 
-std::optional<Package> PackageSender::get_sending_buffer(){
-    if(package_sender_buffor_){
-        std::optional<Package> temp_buffor_ = std::move(package_sender_buffor_);
-        return temp_buffor_;
-    }
-    else{
-        return std::nullopt;
-    }
+std::optional<Package> & PackageSender::get_sending_buffer(){
+    return package_sender_buffor_;
 }
 
 //=============================================================//

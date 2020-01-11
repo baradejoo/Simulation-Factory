@@ -22,9 +22,9 @@ public:
     virtual bool empty() = 0;
     virtual size_type size() = 0;
     virtual const_iterator begin() = 0;
-    virtual const const_iterator cbegin() = 0;
+    virtual const_iterator cbegin() const = 0;
     virtual const_iterator end() = 0;
-    virtual const const_iterator cend() = 0;
+    virtual const_iterator cend() const = 0;
 
     virtual ~IPackageStockpile() {}
 };
@@ -47,9 +47,9 @@ public:
 
     size_type size() override { return queue.size(); }
     const_iterator begin() override { return queue.begin(); }
-    const const_iterator cbegin() override { return queue.cbegin(); };
+    const_iterator cbegin() const override { return queue.cbegin(); };
     const_iterator end() override { return queue.end(); };
-    const const_iterator cend() override { return queue.cend(); }
+    const_iterator cend() const override { return queue.cend(); }
 
     Package pop() override;
     PackageQueueType get_queue_type() override { return queue_type; }
