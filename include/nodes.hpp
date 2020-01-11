@@ -26,11 +26,6 @@ public:
 //    virtual ReceiverType get_receiver_type() const = 0; // TODO in FACTORY
     virtual ElementID get_id() const = 0;
 
-    virtual pacReceiverIt begin() = 0;
-    virtual const pacReceiverIt cbegin() = 0;
-    virtual pacReceiverIt end() = 0;
-    virtual const pacReceiverIt cend() = 0;
-
     virtual ~IPackageReceiver() {};
 };
 

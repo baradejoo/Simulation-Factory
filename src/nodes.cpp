@@ -132,13 +132,19 @@ void ReceiverPreferences::remove_receiver(IPackageReceiver* r){
 IPackageReceiver* ReceiverPreferences::choose_receiver(){
     double number = probability_generator_();
     double sum = 0.0;
-    for (const auto &item: preferences_list_)
-    {
-        sum += item.second;
-        if(number <= sum)
-            return item.first;
+    preferences_t::reverse_iterator iter;
+    preferences_t::reverse_iterator rbegin_it = preferences_list_.rbegin()
+    preferences_t::reverse_iterator rend_it = preferences_list_.rend()
+
+    IPackageReceiver* temp = rbegin_it->first;
+    for(iter = rbegin_it; iter != rend_it; ++iter){
+        sum += iter -> second;
+        temp = iter -> first;
+        if(number < sum){
+            break;
+        }
     }
-    return preferences_list_.end()->first;
+    return temp;
 }
 
 
