@@ -9,12 +9,7 @@
 #include <iostream>
 #include <vector>
 #include "types.hpp"
-
-class Factory{
-public:
-
-private:
-};
+#include "nodes.hpp"
 
 template <class Node>
 class NodeCollection {
@@ -49,10 +44,23 @@ public:
         return std::find_if(cbegin(),cend(), is_id_equal());
     }
 
-
 private:
     std::vector<Node> nodes_;
 
+};
+
+class Factory{
+public:
+
+//    void add_ramp(Ramp&& ramp){ramps_.add(ramp);};
+//    remove_ramp(id: ElementID) : void
+//    NodeCollection<Ramp>::iterator find_ramp_by_id(ElementID id){ return ramps_.find_by_id(id);};
+//    auto find_ramp_by_id(ElementID id){ return ramps_.NodeCollection<Ramp>::const_iterator;};
+//    ramp_cbegin() : NodeCollection<Ramp>::const_iterator {query}
+//    ramp_cend() : NodeCollection<Ramp>::const_iterator {query}
+
+private:
+    NodeCollection<Ramp> ramps_;
 };
 
 #endif //FABRYKA_FACTORY_HPP
