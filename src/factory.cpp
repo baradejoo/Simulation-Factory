@@ -1,36 +1,87 @@
 //
 // Created by Bartolemello on 16.01.2020.
 //
-#include "factory.hpp"
+#include <factory.hpp>
 
-void Factory::do_deliveries(Time time){
-    std::for_each(Ramps.begin(), Ramps.end(), [time](Ramp & ramp_) { ramp_.deliver_goods(time); });
+bool has_reachable_storehouse(const PackageSender* sender, std::map<const PackageSender*, NodeColor>& node_colors){
+    if(node_colors[sender] == NodeColor::VERIFIED)
+        return true;
+    node_colors[sender] = NodeColor::VISITED;
+
+    if(sender->receiver_preferences_.get_preferences().empty())
+        return false;
+
+    bool has_receiver_flag = false;
+    bool has_storehouse_reachable = false;
+    int bad_nodes = 0;
+    for(auto receiver : sender->receiver_preferences_.get_preferences()) {
+        if (receiver.first->get_receiver_type() == ReceiverType::Storehouse){
+            has_receiver_flag = true;
+            has_storehouse_reachable = true;
+        }
+        else{
+            auto worker_ptr = dynamic_cast<Worker*>(receiver.first);
+            if(worker_ptr == sender)
+                continue;
+            has_receiver_flag = true;
+            auto sendrecv_ptr = dynamic_cast<PackageSender*>(worker_ptr);
+            if(node_colors[sendrecv_ptr] == NodeColor::UNVISITED)
+                has_storehouse_reachable = has_reachable_storehouse(sendrecv_ptr, node_colors);
+        }
+        if(!has_storehouse_reachable || !has_receiver_flag)bad_nodes++;
+    }
+    node_colors[sender] = NodeColor::VERIFIED;
+    if(has_storehouse_reachable && has_receiver_flag && bad_nodes == 0)
+        return true;
+    else return false;
+}
+
+bool Factory::is_consistent() const {
+    std::map<const PackageSender*, NodeColor> node_colors;
+    node_colors.clear();
+    for(auto& ramp: collection_of_ramps_) {
+        Ramp *rptr = const_cast<Ramp *>(&ramp);
+        node_colors.insert({dynamic_cast<PackageSender *>(rptr), NodeColor::UNVISITED});
+    }
+    for(auto& worker: collection_of_workers_) {
+        Worker *wptr = const_cast<Worker *>(&worker);
+        node_colors.insert({dynamic_cast<PackageSender *>(wptr), NodeColor::UNVISITED});
+    }
+
+    for(auto& ramp: collection_of_ramps_) {
+        try {
+
+            if(!has_reachable_storehouse(&ramp,node_colors))
+                return false;
+        } catch (std::logic_error())
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+void Factory::do_deliveries(Time time) {
+    for(auto& ramps: collection_of_ramps_){
+        ramps.deliver_goods(time);
+    }
 }
 
 void Factory::do_package_passing() {
-    std::for_each(Ramps.begin(), Ramps.end(), [](Ramp & ramp_){ ramp_.send_package(); });
-    std::for_each(Workers.begin(),Workers.end(),[](Worker & worker_) { worker_.send_package(); });
+    for(auto& ramp: collection_of_ramps_){
+        if(ramp.get_sending_buffer().has_value()){
+            ramp.send_package();
+        }
+    }
+    for(auto& worker: collection_of_workers_){
+        if(worker.get_sending_buffer().has_value()){
+            worker.send_package();
+        }
+    }
 }
 
 void Factory::do_work(Time time) {
-    std::for_each(Workers.begin(), Workers.end(), [time](Worker & worker_) { worker_.do_work(time); });
-}
-
-template <typename Node>
-void Factory::remove_receiver(NodeCollection<Node>& collection_, ElementID id){
-    collection_.remove_by_id(id);
-
-    auto ramp_vec = std::find_if(Ramps.begin(), Ramps.end(), [id](auto& element){
-        return id == element.receiver_preferences_.get_preferences()->first; });
-
-    for (auto& ramp: ramp_vec) {
-        ramp.receiver_preferences_.remove_receiver(&collection_.find_ramp_by_id(id));
-    }
-
-    auto worker_vec = std::find_if(Workers.begin(), Workers.end(), [id](auto& element) {
-        return id == element.receiver_preferences_.get_preferences()->first; });
-
-    for (auto& worker: worker_vec) {
-        worker.receiver_preferences_.remove_receiver(&collection_.find_worker_by_id(id));
+    for(auto& worker: collection_of_workers_){
+        worker.do_work(time);
     }
 }
