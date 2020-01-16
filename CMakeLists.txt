@@ -9,6 +9,7 @@ include_directories(
 )
 
 set(SOURCE_FILES
+        src/factory.cpp
         src/package.cpp
         src/storage_types.cpp
         src/nodes.cpp
