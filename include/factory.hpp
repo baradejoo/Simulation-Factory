@@ -11,10 +11,10 @@
 #include "types.hpp"
 #include "nodes.hpp"
 
-template <class Node>
+template <typename Node>
 class NodeCollection {
-
-    using container_t = typename std::vector<Node>;
+public:
+    using container_t = typename std::list<Node>;
     using iterator = typename container_t::iterator;
     using const_iterator = typename container_t::const_iterator;
 
@@ -25,18 +25,12 @@ class NodeCollection {
     iterator end() { return nodes_.end(); }
     const_iterator end() const { return nodes_.cend(); }
 
-public:
-   // NodeCollection(const std::vector<ReceiverType>& nodes_container) : nodes_container(nodes_container) {}
-    void add(Node& node) {nodes_.push_back(std::move(node));}
-
-    void remove_by_id(ElementID id_){
-        if(find_by_id(id_) != end())
-        nodes_.erase(find_by_id(id_));
-    }
+    void add(Node& node) { nodes_.emplace_back(std::move(node)); }
+    void remove_by_id(ElementID id_);
 
     NodeCollection<Node>::iterator find_by_id(ElementID id_){
-       auto is_id_equal = [id_] (const Node& node){return node.get_id()==id_;};
-       return std::find_if(begin(), end(), is_id_equal());
+        auto is_id_equal = [id_] (const Node& node){return node.get_id()==id_;};
+        return std::find_if(begin(), end(), is_id_equal());
     }
 
     NodeCollection<Node>::const_iterator find_by_id(ElementID id_) const {
@@ -44,24 +38,46 @@ public:
         return std::find_if(cbegin(),cend(), is_id_equal());
     }
 
+
 private:
     std::vector<Node> nodes_;
 
 };
 
+
 class Factory{
 public:
+    void do_package_passing();
+    bool is_consistent();
+    void do_work(Time time);
+    void do_deliveries(Time time);
 
-//    void add_ramp(Ramp&& ramp){ramps_.add(ramp);};
-//    remove_ramp(id: ElementID) : void
-//    NodeCollection<Ramp>::iterator find_ramp_by_id(ElementID id){ return ramps_.find_by_id(id);};
-//    auto find_ramp_by_id(ElementID id){ return ramps_.NodeCollection<Ramp>::const_iterator;};
-//    ramp_cbegin() : NodeCollection<Ramp>::const_iterator {query}
-//    ramp_cend() : NodeCollection<Ramp>::const_iterator {query}
+
+//==================== Storehouse - function ====================//
+    void add_storehouse(Storehouse && nodes){ Storehouses.add(nodes); }
+    void remove_storehouse(ElementID id) {};
+
+    NodeCollection<Storehouse>::iterator find_storehouse_by_id(ElementID id){ return Storehouses.find_by_id(id); }
+    NodeCollection<Storehouse>::const_iterator find_storehouse_by_id(ElementID id) const { return Storehouses.find_by_id(id); }
+    NodeCollection<Storehouse>::const_iterator storehouse_cbegin(){ return Storehouses.cbegin(); }
+    NodeCollection<Storehouse>::const_iterator storehouse_cend(){ return Storehouses.cend(); }
+//===============================================================//
 
 private:
-    NodeCollection<Ramp> ramps_;
+    NodeCollection<Storehouse> Storehouses;
+    NodeCollection<Worker> Workers;
+    NodeCollection<Ramp> Ramps;
+    void remove_receiver(NodeCollection<Node>& collection_, ElementID id);
+
 };
+
+template<typename Node>
+void NodeCollection<Node>::remove_by_id(ElementID id_){
+    NodeCollection::iterator iter = find_by_id(id_);
+    if(iter != nodes_.end()){
+        nodes_.erase(iter);
+    }
+}
 
 #endif //FABRYKA_FACTORY_HPP
 
