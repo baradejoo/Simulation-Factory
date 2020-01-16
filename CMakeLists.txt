@@ -13,7 +13,9 @@ set(SOURCE_FILES
         src/package.cpp
         src/storage_types.cpp
         src/nodes.cpp
-        src/helpers.cpp)
+        src/helpers.cpp
+        src/simulation.cpp
+        src/reports.cpp )
 
 add_executable(Fabryka__debug ${SOURCE_FILES} #fabryka.cpp #src/storage_types.cpp#)
         )

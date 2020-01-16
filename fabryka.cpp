@@ -4,26 +4,25 @@
 #include "package.hpp"
 #include "types.hpp"
 #include "nodes.hpp"
+#include "factory.hpp"
+#include "helpers.hpp"
+#include "simulation.hpp"
+#include "reports.hpp"
+#include "config.hpp"
 
 int main() {
-//    PackageQueue q(PackageQueueType::FIFO);
-//    std::unique_ptr<IPackageStockpile> ptr = std::make_unique<PackageQueue>(q);
-//    Storehouse s(1, std::move(ptr));
-//    Ramp r(1,2);
-//    r.mReceiverPreferences.add_receiver(&s);
-//    r.deliver_goods(0);
-//    std::cout<< "Pierwszy z kontenera: " <<s.cbegin()->get_id()<< std::endl;
-//    r.deliver_goods(1);
-//    std::cout<< "Pierwszy z kontenera: " <<s.cbegin()->get_id()<< std::endl;
-//
-//    r.deliver_goods(2);
-//    std::cout<< "1 z kontenera: " <<s.cbegin()->get_id()<< std::endl;
-//    std::cout<< "2 z kontenera: " <<s.cend()->get_id()<< std::endl;
-//    r.deliver_goods(3);
-//    std::cout<< "1 z kontenera: " <<s.cbegin()->get_id()<< std::endl;
-//    std::cout<< "2 z kontenera: " <<s.cend()->get_id()<< std::endl;
-//    r.deliver_goods(4);
-//    std::cout<< "1 z kontenera: " <<s.cbegin()->get_id()<< std::endl;
-//    std::cout<< "2 z kontenera: " <<s.cend()->get_id()<< std::endl;
+    Factory factory;
+/* inicjalizacja fabryki */
+
+// Testowanie z użyciem "wydmuszki" funkcji raportującej.
+    simulate(factory, 3, [](Factory&, TimeOffset) {});
+
+// Testowanie z użyciem konkretnego obiektu klasy raportującej.
+    SpecificTurnsReportNotifier spec_notifier(std::set<Time>{1});
+    simulate(factory, 3, [&spec_notifier](Factory& f, TimeOffset t_offset) {
+        if (spec_notifier.should_generate_report(t_offset)) {
+            generate_structure_report(f, std::cout);
+        }
+    });
     return 0;
 }
