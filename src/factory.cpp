@@ -1,42 +1,41 @@
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)
 //
-// Created by Bartolemello on 16.01.2020.
+// Created on 16.01.2020.
 //
 #include "factory.hpp"
 
-bool is_storehouse_available(const PackageSender* sender, std::map<const PackageSender*, NodeColor>& node_colors){
-    if(node_colors[sender] == NodeColor::VERIFIED)
-        return true;
-    node_colors[sender] = NodeColor::VISITED;
-    if(sender->receiver_preferences_.get_preferences().empty())
-        return false;
+bool is_storehouse_available(std::map<const PackageSender*, NodeColor>& node_colors, const PackageSender* sender) {
 
-    bool has_receiver_flag = false;
+    if(node_colors[sender] == NodeColor::VERIFIED) {
+        return true;
+    }
+    node_colors[sender] = NodeColor::VISITED;
+    if(sender->receiver_preferences_.get_preferences().empty()) {
+        return false;
+    }
     bool storehouse_avail = false;
-    int bad_nodes = 0;
+    bool flag_avail = false;
+    int invalid_nodes = 0;
     for(auto receiver : sender->receiver_preferences_.get_preferences()) {
         if (receiver.first->get_receiver_type() == ReceiverType::Storehouse){
-            has_receiver_flag = true;
             storehouse_avail = true;
+            flag_avail = true;
         }
         else{
             auto worker_ptr = dynamic_cast<Worker*>(receiver.first);
             if(worker_ptr == sender)
                 continue;
-            has_receiver_flag = true;
             auto sendrecv_ptr = dynamic_cast<PackageSender*>(worker_ptr);
+            flag_avail = true;
             if(node_colors[sendrecv_ptr] == NodeColor::UNVISITED)
-                storehouse_avail = is_storehouse_available(sendrecv_ptr, node_colors);
+                storehouse_avail = is_storehouse_available(node_colors, sendrecv_ptr);
         }
-        if(!storehouse_avail || !has_receiver_flag){
-            bad_nodes++;
+        if(!storehouse_avail || !flag_avail){
+            invalid_nodes++;
         }
     }
     node_colors[sender] = NodeColor::VERIFIED;
-    if(storehouse_avail && has_receiver_flag && bad_nodes == 0) {
-        return true;
-    }else {
-        return false;
-    }
+    return  invalid_nodes == 0 &&storehouse_avail && flag_avail;
 }
 
 //=====================================//
@@ -57,7 +56,7 @@ bool Factory::is_consistent() const {
     for(auto& ramp: ramps_) {
         try {
 
-            if(!is_storehouse_available(&ramp, node_colors))
+            if(!is_storehouse_available(node_colors, &ramp))
                 return false;
         } catch (std::logic_error())
         {
@@ -67,27 +66,32 @@ bool Factory::is_consistent() const {
     return true;
 }
 
+
 void Factory::do_deliveries(Time time) {
     for(auto& ramps: ramps_){
         ramps.deliver_goods(time);
     }
 }
 
+
 void Factory::do_package_passing() {
     for(auto& ramp: ramps_){
-        if(ramp.get_sending_buffer().has_value()){
+        if((ramp.get_sending_buffer()).has_value()){
             ramp.send_package();
         }
     }
     for(auto& worker: workers_){
-        if(worker.get_sending_buffer().has_value()){
+        if((worker.get_sending_buffer()).has_value()){
             worker.send_package();
         }
     }
 }
+
 
 void Factory::do_work(Time time) {
     for(auto& worker: workers_){
         worker.do_work(time);
     }
 }
+
+// 42: Burda (302827), Baradziej (302819), Bytnar (297074)
