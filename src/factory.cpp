@@ -36,10 +36,13 @@ bool has_reachable_storehouse(const PackageSender* sender, std::map<const Packag
     else return false;
 }
 
+//=====================================//
+//============= Factory ===============//
+
 bool Factory::is_consistent() const {
     std::map<const PackageSender*, NodeColor> node_colors;
     node_colors.clear();
-    for(auto& ramp: collection_of_ramps_) {
+    for(auto& ramp: ramps_) {
         Ramp *rptr = const_cast<Ramp *>(&ramp);
         node_colors.insert({dynamic_cast<PackageSender *>(rptr), NodeColor::UNVISITED});
     }
@@ -48,7 +51,7 @@ bool Factory::is_consistent() const {
         node_colors.insert({dynamic_cast<PackageSender *>(wptr), NodeColor::UNVISITED});
     }
 
-    for(auto& ramp: collection_of_ramps_) {
+    for(auto& ramp: ramps_) {
         try {
 
             if(!has_reachable_storehouse(&ramp,node_colors))
@@ -62,13 +65,13 @@ bool Factory::is_consistent() const {
 }
 
 void Factory::do_deliveries(Time time) {
-    for(auto& ramps: collection_of_ramps_){
+    for(auto& ramps: ramps_){
         ramps.deliver_goods(time);
     }
 }
 
 void Factory::do_package_passing() {
-    for(auto& ramp: collection_of_ramps_){
+    for(auto& ramp: ramps_){
         if(ramp.get_sending_buffer().has_value()){
             ramp.send_package();
         }
