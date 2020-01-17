@@ -13,7 +13,7 @@
 
 
 enum class NodeColor{
-    UNVISITED, VISITED, VERIFIED
+    VISITED, UNVISITED,  VERIFIED
 };
 
 
@@ -21,6 +21,7 @@ enum class NodeColor{
 //=========== NodeCollection ==========//
 
 template <typename Node>
+
 class NodeCollection{
 public:
 
@@ -50,6 +51,7 @@ public:
         if(it != nodes_.end())
             nodes_.erase(it,++it);
     }
+
 private:
     container_t nodes_;
 };

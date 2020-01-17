@@ -3,21 +3,20 @@
 //
 #include "factory.hpp"
 
-bool has_reachable_storehouse(const PackageSender* sender, std::map<const PackageSender*, NodeColor>& node_colors){
+bool is_storehouse_available(const PackageSender* sender, std::map<const PackageSender*, NodeColor>& node_colors){
     if(node_colors[sender] == NodeColor::VERIFIED)
         return true;
     node_colors[sender] = NodeColor::VISITED;
-
     if(sender->receiver_preferences_.get_preferences().empty())
         return false;
 
     bool has_receiver_flag = false;
-    bool has_storehouse_reachable = false;
+    bool storehouse_avail = false;
     int bad_nodes = 0;
     for(auto receiver : sender->receiver_preferences_.get_preferences()) {
         if (receiver.first->get_receiver_type() == ReceiverType::Storehouse){
             has_receiver_flag = true;
-            has_storehouse_reachable = true;
+            storehouse_avail = true;
         }
         else{
             auto worker_ptr = dynamic_cast<Worker*>(receiver.first);
@@ -26,14 +25,18 @@ bool has_reachable_storehouse(const PackageSender* sender, std::map<const Packag
             has_receiver_flag = true;
             auto sendrecv_ptr = dynamic_cast<PackageSender*>(worker_ptr);
             if(node_colors[sendrecv_ptr] == NodeColor::UNVISITED)
-                has_storehouse_reachable = has_reachable_storehouse(sendrecv_ptr, node_colors);
+                storehouse_avail = is_storehouse_available(sendrecv_ptr, node_colors);
         }
-        if(!has_storehouse_reachable || !has_receiver_flag)bad_nodes++;
+        if(!storehouse_avail || !has_receiver_flag){
+            bad_nodes++;
+        }
     }
     node_colors[sender] = NodeColor::VERIFIED;
-    if(has_storehouse_reachable && has_receiver_flag && bad_nodes == 0)
+    if(storehouse_avail && has_receiver_flag && bad_nodes == 0) {
         return true;
-    else return false;
+    }else {
+        return false;
+    }
 }
 
 //=====================================//
@@ -54,7 +57,7 @@ bool Factory::is_consistent() const {
     for(auto& ramp: ramps_) {
         try {
 
-            if(!has_reachable_storehouse(&ramp,node_colors))
+            if(!is_storehouse_available(&ramp, node_colors))
                 return false;
         } catch (std::logic_error())
         {
