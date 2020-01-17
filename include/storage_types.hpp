@@ -40,8 +40,8 @@ public:
 
 class PackageQueue : public IPackageQueue {
 public:
-    PackageQueue(PackageQueueType type): queue_type(type){}
-
+    PackageQueue(const PackageQueueType type): queue_type(type){}
+    Package pop() override;
     bool empty() override { return queue.empty(); }
     void push(Package&& package) override {queue.emplace_back(std::move(package));}
 
@@ -51,7 +51,7 @@ public:
     const_iterator end() override { return queue.end(); };
     const_iterator cend() const override { return queue.cend(); }
 
-    Package pop() override;
+
     PackageQueueType get_queue_type() override { return queue_type; }
 
 private:
