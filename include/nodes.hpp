@@ -77,10 +77,8 @@ private:
 class PackageSender {
 public:
     PackageSender() = default;
-//    PackageSender(const PackageSender&) noexcept ; // TODO Do przemyslenia ...
+
     PackageSender(PackageSender&&) = default; //TODO dla factory wymagane
-//    PackageSender& operator=(const PackageSender&) noexcept ;
-//    PackageSender&& operator=(PackageSender&&) noexcept ;
 
     void send_package();
 
@@ -102,18 +100,20 @@ private:
 class Worker : public IPackageReceiver, public PackageSender {
 public:
     Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> q);
+
     Worker(Worker&&) = default;
 
     void do_work(Time t);
 
     TimeOffset get_processing_duration() { return pd_; };
 
-    Time get_package_processing_start_time() const { return t_; }
+    Time get_package_processing_start_time() const { return t_; };
 
     //ReceiverType get_receiver_type() const override { return rec_tp; } // TODO in FACTORY
-    ReceiverType get_receiver_type() const override { return ReceiverType::Worker;}
+    ReceiverType get_receiver_type() const override { return ReceiverType::Worker; };
 
-    ElementID get_id() const override { return id_; }
+
+    ElementID get_id() const override { return id_; };
 
     void receive_package(Package &&package) override;
 
@@ -170,7 +170,7 @@ public:
 private:
     ElementID id_;
     std::unique_ptr<IPackageStockpile> d_;
-    //ReceiverType rec_tp = ReceiverType::Storehouse; // TODO in FACTORY
+
 
 };
 
@@ -186,7 +186,8 @@ public:
 
     TimeOffset get_delivery_interval() { return di_; }
 
-    ElementID get_id() const { return id_; }
+    //ElementID get_id() const { return id_; }
+    ElementID get_id() const {return id_;}
 
     ~Ramp() = default;
 private:

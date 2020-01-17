@@ -61,33 +61,22 @@ void Ramp::deliver_goods(Time t) {
 //======= ReceiverPreferences- Function definitions============//
 
 void ReceiverPreferences::add_receiver(IPackageReceiver *r) {
-    double sum_temp = 0.0;
-    double pref_temp = 1;
-    preferences_list_[r] = pref_temp;
-
-    for (auto &item : preferences_list_) {
-        preferences_list_[item.first] = 1.0 / preferences_list_.size();
-        sum_temp += item.second;
-    }
-
-    if (sum_temp != 1.0) {
-        preferences_list_[r] = preferences_list_[r] + 1.0 - sum_temp;
+    int len = static_cast<int>(preferences_list_.size());
+    ++len;
+    double prob = 1.0/len;
+    preferences_list_.emplace(std::make_pair(r,0.0));
+    for(auto& item: preferences_list_){
+        preferences_list_[item.first] = prob;
     }
 }
 
 void ReceiverPreferences::remove_receiver(IPackageReceiver *r) {
-    double sum_temp = 0.0;
+    int len = static_cast<int>(preferences_list_.size());
+    --len;
+    double prob = 1.0/len;
     preferences_list_.erase(r);
-    IPackageReceiver *temp = r;
-
-    for (const auto &item: preferences_list_) {
-        preferences_list_[item.first] = 1.0 / preferences_list_.size();
-        sum_temp += item.second;
-        temp = item.first;
-    }
-
-    if (sum_temp != 1.0) {
-        preferences_list_[temp] = preferences_list_[temp] + 1.0 - sum_temp;
+    for(auto& item: preferences_list_){
+        preferences_list_[item.first] = prob;
     }
 }
 
@@ -108,6 +97,7 @@ IPackageReceiver *ReceiverPreferences::choose_receiver() {
     }
     return temp;
 }
+
 
 // 42: Burda (302827), Baradziej (302819), Bytnar (297074)
 
