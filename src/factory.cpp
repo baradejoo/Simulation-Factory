@@ -1,7 +1,7 @@
 //
 // Created by Bartolemello on 16.01.2020.
 //
-#include <factory.hpp>
+#include "factory.hpp"
 
 bool has_reachable_storehouse(const PackageSender* sender, std::map<const PackageSender*, NodeColor>& node_colors){
     if(node_colors[sender] == NodeColor::VERIFIED)
@@ -46,7 +46,7 @@ bool Factory::is_consistent() const {
         Ramp *rptr = const_cast<Ramp *>(&ramp);
         node_colors.insert({dynamic_cast<PackageSender *>(rptr), NodeColor::UNVISITED});
     }
-    for(auto& worker: collection_of_workers_) {
+    for(auto& worker: workers_) {
         Worker *wptr = const_cast<Worker *>(&worker);
         node_colors.insert({dynamic_cast<PackageSender *>(wptr), NodeColor::UNVISITED});
     }
@@ -76,7 +76,7 @@ void Factory::do_package_passing() {
             ramp.send_package();
         }
     }
-    for(auto& worker: collection_of_workers_){
+    for(auto& worker: workers_){
         if(worker.get_sending_buffer().has_value()){
             worker.send_package();
         }
@@ -84,7 +84,7 @@ void Factory::do_package_passing() {
 }
 
 void Factory::do_work(Time time) {
-    for(auto& worker: collection_of_workers_){
+    for(auto& worker: workers_){
         worker.do_work(time);
     }
 }

@@ -8,12 +8,9 @@
 #define FABRYKA_FACTORY_HPP
 
 #include <iostream>
-#include <vector>
 #include "types.hpp"
 #include "nodes.hpp"
 
-#include <nodes.hpp>
-#include <iostream>
 
 enum class NodeColor{
     UNVISITED, VISITED, VERIFIED
@@ -38,10 +35,11 @@ public:
     NodeCollection<Node>::iterator end(){ return nodes_.end(); }
     NodeCollection<Node>::const_iterator end() const{ return nodes_.cend(); }
     NodeCollection<Node>::const_iterator cend() const{ return nodes_.cend(); }
+
     void add(Node& node) { nodes_.emplace_back(std::move(node));}
 
-    NodeCollection<Node>::iterator find_by_id(ElementID id_) { return std::find_if(nodes_.begin(), nodes_.end(), [id_](const Node& node){
-            return id_ == node.get_id();});
+    NodeCollection<Node>::iterator find_by_id(ElementID id_) {
+        return std::find_if(nodes_.begin(), nodes_.end(), [id_](const Node& node){ return id_ == node.get_id();});
     }
     NodeCollection<Node>::const_iterator find_by_id(ElementID id_) const {
         return std::find_if(nodes_.cbegin(), nodes_.cend(), [id_](const Node& node){ return id_ == node.get_id();});
@@ -70,14 +68,14 @@ public:
     NodeCollection<Ramp>::const_iterator ramp_cend()const{return ramps_.cend();}
 
     void add_worker(Worker&& w){workers_.add(w);}
-    void remove_worker(ElementID id){this -> remove_receiver(workers_,id);}
+    void remove_worker(ElementID id){ remove_receiver(workers_,id);}
     NodeCollection<Worker>::iterator find_worker_by_id(ElementID id){return workers_.find_by_id(id);}
     NodeCollection<Worker>::const_iterator find_worker_by_id(ElementID id) const{return workers_.find_by_id(id);}
     NodeCollection<Worker>::const_iterator worker_cbegin()const{return workers_.cbegin();}
     NodeCollection<Worker>::const_iterator worker_cend()const{return workers_.cend();}
 
     void add_storehouse(Storehouse&& s){stores_.add(s);}
-    void remove_storehouse(ElementID id){this -> remove_receiver(stores_,id);}
+    void remove_storehouse(ElementID id){ remove_receiver(stores_,id);}
     NodeCollection<Storehouse>::iterator find_storehouse_by_id(ElementID id){return stores_.find_by_id(id);}
     NodeCollection<Storehouse>::const_iterator find_storehouse_by_id(ElementID id) const{return stores_.find_by_id(id);}
     NodeCollection<Storehouse>::const_iterator storehouse_cbegin()const{return stores_.cbegin();}
@@ -91,9 +89,9 @@ public:
 private:
     template <typename Node>
     void remove_receiver(NodeCollection<Node>& collection, ElementID id){
-        ReceiverType rt = collection.begin()->get_receiver_type();
+        ReceiverType r_type = collection.begin()->get_receiver_type();
         collection.remove_by_id(id);
-        if(rt == ReceiverType::Worker) {
+        if(r_type == ReceiverType::Worker) {
             for (auto& ramp: ramps_) {
                 for (auto& preference: ramp.receiver_preferences_) {
                     if (preference.first->get_id() == id) {
