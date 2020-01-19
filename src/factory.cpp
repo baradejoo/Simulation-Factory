@@ -9,13 +9,16 @@ bool is_storehouse_available(std::map<const PackageSender*, NodeColor>& node_col
     if(node_colors[sender] == NodeColor::VERIFIED) {
         return true;
     }
+
     node_colors[sender] = NodeColor::VISITED;
     if(sender->receiver_preferences_.get_preferences().empty()) {
         return false;
     }
+
     bool storehouse_avail = false;
-    bool flag_avail = false;
     int invalid_nodes = 0;
+    bool flag_avail = false;
+
     for(auto receiver : sender->receiver_preferences_.get_preferences()) {
         if (receiver.first->get_receiver_type() == ReceiverType::Storehouse){
             storehouse_avail = true;
@@ -37,6 +40,7 @@ bool is_storehouse_available(std::map<const PackageSender*, NodeColor>& node_col
     node_colors[sender] = NodeColor::VERIFIED;
     return  invalid_nodes == 0 &&storehouse_avail && flag_avail;
 }
+
 
 //=====================================//
 //============= Factory ===============//
@@ -67,12 +71,13 @@ bool Factory::is_consistent() const {
 }
 
 
-void Factory::do_deliveries(Time time) {
-    for(auto& ramps: ramps_){
-        ramps.deliver_goods(time);
+
+
+void Factory::do_work(Time time) {
+    for(auto& worker: workers_){
+        worker.do_work(time);
     }
 }
-
 
 void Factory::do_package_passing() {
     for(auto& ramp: ramps_){
@@ -87,11 +92,12 @@ void Factory::do_package_passing() {
     }
 }
 
-
-void Factory::do_work(Time time) {
-    for(auto& worker: workers_){
-        worker.do_work(time);
+void Factory::do_deliveries(Time time) {
+    for(auto& ramps: ramps_){
+        ramps.deliver_goods(time);
     }
 }
+
+
 
 // 42: Burda (302827), Baradziej (302819), Bytnar (297074)

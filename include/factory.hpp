@@ -29,12 +29,15 @@ public:
     using iterator = typename container_t::iterator;
     using const_iterator = typename container_t::const_iterator;
 
-    NodeCollection<Node>::const_iterator begin() const{ return nodes_.cbegin(); }
-    NodeCollection<Node>::const_iterator cbegin() const{ return nodes_.cbegin(); }
     NodeCollection<Node>::iterator begin(){ return nodes_.begin(); }
     NodeCollection<Node>::iterator end(){ return nodes_.end(); }
+
+    NodeCollection<Node>::const_iterator begin() const{ return nodes_.cbegin(); }
     NodeCollection<Node>::const_iterator end() const{ return nodes_.cend(); }
+
+    NodeCollection<Node>::const_iterator cbegin() const{ return nodes_.cbegin(); }
     NodeCollection<Node>::const_iterator cend() const{ return nodes_.cend(); }
+
 
     void add(Node& node) { nodes_.emplace_back(std::move(node));}
 
@@ -63,20 +66,25 @@ public:
 
     void add_ramp(Ramp&& x){ramps_.add(x);}
     void remove_ramp(ElementID id){ramps_.remove_by_id(id);}
+
     NodeCollection<Ramp>::iterator find_ramp_by_id(ElementID id){return ramps_.find_by_id(id);}
     NodeCollection<Ramp>::const_iterator find_ramp_by_id(ElementID id) const{return ramps_.find_by_id(id);}
     NodeCollection<Ramp>::const_iterator ramp_cbegin()const{return ramps_.cbegin();}
     NodeCollection<Ramp>::const_iterator ramp_cend()const{return ramps_.cend();}
 
+
     void add_worker(Worker&& y){workers_.add(y);}
     void remove_worker(ElementID id){ remove_receiver(workers_,id);}
+
     NodeCollection<Worker>::iterator find_worker_by_id(ElementID id){return workers_.find_by_id(id);}
     NodeCollection<Worker>::const_iterator find_worker_by_id(ElementID id) const{return workers_.find_by_id(id);}
     NodeCollection<Worker>::const_iterator worker_cbegin()const{return workers_.cbegin();}
     NodeCollection<Worker>::const_iterator worker_cend()const{return workers_.cend();}
 
+
     void add_storehouse(Storehouse&& z){stores_.add(z);}
     void remove_storehouse(ElementID id){ remove_receiver(stores_,id);}
+
     NodeCollection<Storehouse>::iterator find_storehouse_by_id(ElementID id){return stores_.find_by_id(id);}
     NodeCollection<Storehouse>::const_iterator find_storehouse_by_id(ElementID id) const{return stores_.find_by_id(id);}
     NodeCollection<Storehouse>::const_iterator storehouse_cbegin()const{return stores_.cbegin();}
