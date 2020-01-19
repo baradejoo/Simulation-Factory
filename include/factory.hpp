@@ -55,43 +55,71 @@ private:
     container_t nodes_;
 };
 
+
+
 //=====================================//
 //============= Factory ===============//
+
 
 class Factory{
 public:
 
+    //============= ramp ===============//
     void add_ramp(Ramp&& x){ramps_.add(x);}
+
     void remove_ramp(ElementID id){ramps_.remove_by_id(id);}
+
     NodeCollection<Ramp>::iterator find_ramp_by_id(ElementID id){return ramps_.find_by_id(id);}
+
     NodeCollection<Ramp>::const_iterator find_ramp_by_id(ElementID id) const{return ramps_.find_by_id(id);}
+
     NodeCollection<Ramp>::const_iterator ramp_cbegin()const{return ramps_.cbegin();}
+
     NodeCollection<Ramp>::const_iterator ramp_cend()const{return ramps_.cend();}
 
+
+    //============= worker ===============//
     void add_worker(Worker&& y){workers_.add(y);}
+
     void remove_worker(ElementID id){ remove_receiver(workers_,id);}
+
     NodeCollection<Worker>::iterator find_worker_by_id(ElementID id){return workers_.find_by_id(id);}
+
     NodeCollection<Worker>::const_iterator find_worker_by_id(ElementID id) const{return workers_.find_by_id(id);}
+
     NodeCollection<Worker>::const_iterator worker_cbegin()const{return workers_.cbegin();}
+
     NodeCollection<Worker>::const_iterator worker_cend()const{return workers_.cend();}
 
+
+    //============= storehouse ===============//
     void add_storehouse(Storehouse&& z){stores_.add(z);}
+
     void remove_storehouse(ElementID id){ remove_receiver(stores_,id);}
+
     NodeCollection<Storehouse>::iterator find_storehouse_by_id(ElementID id){return stores_.find_by_id(id);}
+
     NodeCollection<Storehouse>::const_iterator find_storehouse_by_id(ElementID id) const{return stores_.find_by_id(id);}
+
     NodeCollection<Storehouse>::const_iterator storehouse_cbegin()const{return stores_.cbegin();}
+
     NodeCollection<Storehouse>::const_iterator storehouse_cend()const{return stores_.cend();}
 
     bool is_consistent() const ;
+
     void do_deliveries(Time);
+
     void do_package_passing();
+
     void do_work(Time);
 
 private:
+
     template <typename Node>
     void remove_receiver(NodeCollection<Node>& collection, ElementID id){
         ReceiverType r_type = collection.begin()->get_receiver_type();
         collection.remove_by_id(id);
+
         if(r_type == ReceiverType::Worker) {
             for (auto& ramp: ramps_) {
                 for (auto& preference: ramp.receiver_preferences_) {
@@ -101,8 +129,7 @@ private:
                     }
                 }
             }
-        }
-        else {
+        } else {
             for (auto &worker: workers_) {
                 for (auto &preference: worker.receiver_preferences_) {
                     if (preference.first->get_id() == id) {
@@ -115,7 +142,9 @@ private:
     }
 
     NodeCollection<Ramp> ramps_;
+
     NodeCollection<Worker> workers_;
+
     NodeCollection<Storehouse> stores_;
 };
 
