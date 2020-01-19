@@ -29,12 +29,15 @@ public:
     using iterator = typename container_t::iterator;
     using const_iterator = typename container_t::const_iterator;
 
-    NodeCollection<Node>::const_iterator begin() const{ return nodes_.cbegin(); }
-    NodeCollection<Node>::const_iterator cbegin() const{ return nodes_.cbegin(); }
     NodeCollection<Node>::iterator begin(){ return nodes_.begin(); }
     NodeCollection<Node>::iterator end(){ return nodes_.end(); }
+
+    NodeCollection<Node>::const_iterator begin() const{ return nodes_.cbegin(); }
     NodeCollection<Node>::const_iterator end() const{ return nodes_.cend(); }
+
+    NodeCollection<Node>::const_iterator cbegin() const{ return nodes_.cbegin(); }
     NodeCollection<Node>::const_iterator cend() const{ return nodes_.cend(); }
+
 
     void add(Node& node) { nodes_.emplace_back(std::move(node));}
 
